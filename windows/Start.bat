@@ -41,7 +41,7 @@ echo    ##                           BBBBBi     MBBBBj                          
 echo    ##                             ii         ii                             ## 
 echo    ##                                                                       ## 
 echo    ##                                                                       ##
-echo    ##                       Aries Toolkit    by linuxx                      ##
+echo    ##                      Xiaomi Toolkit    by linuxx                      ##
 echo    ##                                                                       ##
 echo    ###########################################################################
 ECHO.
