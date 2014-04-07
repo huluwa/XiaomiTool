@@ -49,7 +49,7 @@ echo.
 echo Installer
 echo.
 echo 1- Apk       3- Recovery
-echo 2- Rom
+echo 2- Rom       4- Repartition
 echo.
 echo 0- Go back
 echo.
@@ -57,6 +57,7 @@ set /p S= ? :
 if %S%==1 goto :apk
 if %S%==2 goto :rom
 if %S%==3 goto :rec1
+if %S%==3 goto :rep1
 if %S%==0 goto :startup
 echo Invalid Input? Try again!...
 pause
@@ -134,10 +135,47 @@ echo Done!
 goto :startup
 
 
+:rep1
+if %DEVICE%==1 goto :rep2
+if %DEVICE%==2 goto :rep3
 
+:rep2
+cls
+echo ################################
+echo # Xiaomi Toolkit               #
+echo # Selected device: %DEVICE%    #
+echo ################################
+echo.
+echo Repartition for Xiaomi mi2(s)
+echo.
+@adb reboot recovery
+@adb wait-for-device
+pause
+@adb pull C:\XiaomiTool\Aries\Repartition.sh /tmp/
+@adb shell chmod 0777 /tmp/repartition.sh
+@adb shell sh /tmp/repartition.sh
+echo Now you MUST install a rom. Let's sideload it
+pause
+goto :rom
 
-
-
+:rep2
+cls
+echo ################################
+echo # Xiaomi Toolkit               #
+echo # Selected device: %DEVICE%    #
+echo ################################
+echo.
+echo Repartition for Xiaomi mi3
+echo.
+@adb reboot recovery
+@adb wait-for-device
+pause
+@adb pull C:\XiaomiTool\Cancro\Repartition.sh /tmp/
+@adb shell chmod 0777 /tmp/repartition.sh
+@adb shell sh /tmp/repartition.sh
+echo Now you MUST install a rom. Let's sideload it
+pause
+goto :rom
 
 ##########Settings
 
