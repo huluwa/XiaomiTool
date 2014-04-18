@@ -48,8 +48,9 @@ echo ################################
 echo.
 echo Installer
 echo.
-echo 1- Apk       3- Recovery
-echo 2- Rom       4- Repartition
+echo 1- Apk       4- Repartition
+echo 2- Rom       5- Gapps/Mod
+echo 3- Recovery  6- Root
 echo.
 echo 0- Go back
 echo.
@@ -57,7 +58,9 @@ set /p S= ? :
 if %S%==1 goto :apk
 if %S%==2 goto :rom
 if %S%==3 goto :rec1
-if %S%==3 goto :rep1
+if %S%==4 goto :rep1
+if %S%==5 goto :mod
+if %S%==6 goto :root
 if %S%==0 goto :startup
 echo Invalid Input? Try again!...
 pause
@@ -176,6 +179,54 @@ pause
 echo Now you MUST install a rom. Let's sideload it
 pause
 goto :rom
+
+:mod
+cls
+echo ################################
+echo # Xiaomi Toolkit               #
+echo # Selected device: %DEVICE%    #
+echo ################################
+echo.
+echo Mod Installer
+echo.
+SET /P MOD= Drag your zip file here, then press Enter:  
+@adb reboot recovery
+@adb wait-for-device
+@adb shell rm -rf /cache/recovery
+@adb shell mkdir /cache/recovery
+adb shell "echo -e '--sideload' > /cache/recovery/command"
+adb reboot recovery
+adb wait-for-device
+echo Wait until you'll see an updating android picture on your phone, then
+pause
+adb sideload %MOD%
+echo Phone will apply the update, do not reboot it untit it ends
+pause
+goto :startup
+
+:root
+cls
+echo ################################
+echo # Xiaomi Toolkit               #
+echo # Selected device: %DEVICE%    #
+echo ################################
+echo.
+echo Root enabler
+echo.
+pause
+@adb reboot recovery
+@adb wait-for-device
+@adb shell rm -rf /cache/recovery
+@adb shell mkdir /cache/recovery
+adb shell "echo -e '--sideload' > /cache/recovery/command"
+adb reboot recovery
+adb wait-for-device
+echo Wait until you'll see an updating android picture on your phone, then
+pause
+adb sideload C:\XiaomiTool\res\root.zip
+echo Phone will apply the update, do not reboot it untit it ends
+pause
+goto :startup
 
 ##########Settings
 
