@@ -55,7 +55,7 @@ headerprint () {
 else
 clear
 echo "################################"
-echo "# LG L Manager                 #"
+echo "# Xiaomi Tool                  #"
 echo "# $DEVICE                         #"
 echo "################################"
 echo " "
@@ -64,7 +64,7 @@ fi
 
 home () {
 headerprint
-echo "1- Install         3- Push and Pull"
+echo "1- Install      3- Push and Pull"
 echo "2- Backup       4- Shell"
 echo " "
 echo "0- Exit            00-About"
@@ -121,7 +121,7 @@ echo "Installer"
 echo " "
 echo "1- Apk       4- Root "
 echo "2- Rom     5- Recovery "
-echo "3- Mod/Gapps
+echo "3- Mod/Gapps"
 echo " "
 echo "0- Go Back"
 read -p "?" Choice
@@ -212,7 +212,7 @@ echo "Wipe /data now!"
 read -p "When you've wiped /data press ENTER"
 adb shell  rm -rf /cache/recovery
 adb shell mkdir /cache/recovery
-adb shell "echo -e '--sideload' > /cache/recovery/command'
+adb shell "echo -e '--sideload' > /cache/recovery/command"
 adb reboot recovery
 adb wait-for-device
 read -p "Drag your zip here and press ENTER: " ROM
