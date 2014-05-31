@@ -56,7 +56,7 @@ else
 clear
 echo "################################"
 echo "# Xiaomi Tool                  #"
-echo "# $DEVICE                         #"
+echo "# $DEVICE                       #"
 echo "################################"
 echo " "
 fi
@@ -166,7 +166,7 @@ home
 }
 
 recovery1 () {
-  elif  [ "$DEVICE" = "aries" ]
+  if  [ "$DEVICE" = "aries" ]
     then
       recovery2
       break
@@ -181,7 +181,6 @@ home
 fi
 }
 
-recovery2 () {
 recovery3 () {
 headerprint
 echo "Recovery installer"
@@ -427,7 +426,7 @@ read -p "? " Choice
   fi
 }
 
-if [ "$ACTION" = 0 ] 
+if [ "$ACTION" = 0 ]
     then
       detect_device
 elif [ "$ACTION" = 1 ]
