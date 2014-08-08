@@ -1,11 +1,21 @@
 @echo off
+
+#   Copyright 2014 Joey Rizzoli
+#
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+
 cls
-goto :device
-
-#################Initial Menu
-
-
-
+goto :setup
 
 :home
 cls
@@ -32,16 +42,13 @@ if %S%==2 goto :backupc
 if %S%==3 goto :sync
 if %S%==4 goto :rebootd
 if %S%==5 goto :terminal
-if %S%==6 goto :setup
+if %S%==6 goto :recorder
+if %S%==7 goto :runtimes
+if %S%==00 goto :setup
 if %S%==0 exit
 echo Invalid Input? Try again!...
 pause
 goto :home
-
-
-
-
-#############Install
 
 
 :install
@@ -118,7 +125,7 @@ echo Recovery installer for Xiaomi mi2(s)
 echo.
 @adb reboot bootloader
 @fastboot devices
-@fastboot flash recovery C:\XiaomiTool\Aries\Recovery\recovery.img
+@fastboot flash recovery %XT%\Aries\Recovery\recovery.img
 echo Done!
 @fastboot reboot
 goto :home
@@ -135,7 +142,7 @@ echo Recovery installer for Xiaomi mi3
 echo.
 @adb reboot bootloader
 @fastboot devices
-@fastboot flash recovery C:\XiaomiTool\Cancro\Recovery\recovery.img
+@fastboot flash recovery %XT%\Cancro\Recovery\recovery.img
 echo Done!
 @fastboot reboot
 goto :home
@@ -151,7 +158,7 @@ echo Recovery installer for Xiaomi RedMi 1S
 echo.
 @adb reboot bootloader
 @fastboot devices
-@fastboot flash recovery C:\XiaomiTool\armani\Recovery\recovery.img
+@fastboot flash recovery %XT%\armani\Recovery\recovery.img
 echo Done!
 @fastboot reboot
 goto :home
@@ -174,7 +181,7 @@ echo.
 @adb reboot recovery
 @adb wait-for-device
 pause
-@adb pull C:\XiaomiTool\Aries\Repartition.sh /tmp/
+@adb pull %XT%\Aries\Repartition.sh /tmp/
 @adb shell chmod 0777 /tmp/repartition.sh
 @adb shell sh /tmp/repartition.sh
 echo Now you MUST install a rom. Sideload it
@@ -193,14 +200,13 @@ echo.
 @adb reboot recovery
 @adb wait-for-device
 pause
-@adb pull C:\XiaomiTool\Cancro\Repartition.sh /tmp/
+@adb pull %XT%\Cancro\Repartition.sh /tmp/
 @adb shell chmod 0777 /tmp/repartition.sh
 @adb shell sh /tmp/repartition.sh
 echo Now you MUST install a rom. Sideload it
 pause
 goto :rom
 
-##########Settings
 
 :device
 echo ################################
@@ -223,9 +229,6 @@ pause
 goto :home
 
 
-
-#############Backup
-
 :backupc
 cls
 echo ################################
@@ -245,6 +248,7 @@ echo Invalid Input? Try again!...
 pause
 goto :backupc
 
+
 :bak
 cls
 echo ################################
@@ -255,10 +259,11 @@ echo.
 echo Backup
 echo.
 set /p BAK=Write here your backup name (NO spaces):
-@adb backup -nosystem -noshared -apk -f C:\XiaomiTool\Backups\%BAK%.ab
+@adb backup -nosystem -noshared -apk -f %BACKFOLD%\%BAK%.ab
 echo Select your password (on phone) if you want, and wait untilt it works.
 pause
 goto :home
+
 
 :rest
 cls
@@ -270,13 +275,12 @@ echo.
 echo Restore
 echo.
 set /p BAK=Write here your backup name (NO spaces):
-@adb restore C:\XiaomiTool\Backups\%BAK%.ab
+@adb restore %BACKFOLD%\%BAK%.ab
 echo Type your password (on phone), and wait untilt it works.
 pause
 goto :home
 
 
-#############Push&Pull
 :sync
 cls
 echo ################################
@@ -296,6 +300,7 @@ echo Invalid Input? Try again!...
 pause
 goto :sync
 
+
 :push
 cls
 echo ################################
@@ -310,6 +315,7 @@ set /p PUSH=Drag and drop your file here (one only):
 pause
 goto :starup
 
+
 :camera
 cls
 echo ################################
@@ -319,14 +325,12 @@ echo ################################
 echo.
 echo Import Photos and Videos
 echo.
-echo File will be placed inside C:\XiaomiTool\Userfiles\Camera
+echo File will be placed inside %CAMERA%
 pause
-@adb pull /sdcard/DCIM/Camera C:\XiaomiTool\Userfiles\
+@adb pull /sdcard/DCIM/Camera %CAMERA%\
 pause
 goto :starup
 
-
-#############Reboot
 
 :rebootd
 cls
@@ -353,7 +357,6 @@ pause
 goto :rebootd
 
 
-#############Shell
 :terminal
 cls
 echo ################################
@@ -369,7 +372,7 @@ adb shell
 pause
 goto :home
 
-:record
+:recorder
 cls
 echo ################################
 echo # Xiaomi Toolkit
@@ -383,3 +386,71 @@ echo.
 adb shell screenrecord /sdcard/Movies/screencast/Record.mp4
 pause
 goto :home
+
+:runtimes
+cls
+echo ################################
+echo # Xiaomi Toolkit
+echo # Selected device: %DEVICE%
+echo ################################
+echo.
+echo Runtime manager
+echo.
+echo 1- Dalvik Runtime
+echo 2- ART Runtime
+echo.
+echo 0- Go back
+set /p S= ? :
+if %S%==1 goto :dalvik
+if %S%==2 goto :artist
+if %S%==0 goto :home
+echo Wrong imput!
+pause
+goto :runtimes
+
+
+:dalvik
+echo ################################
+echo # Xiaomi Toolkit
+echo # Selected device: %DEVICE%
+echo ################################
+echo.
+echo Runtime: Dalvik
+echo.
+@adb reboot recovery
+@adb wait-for-device
+@adb push %RES%\runtime\dalvik.sh /tmp
+adb shell sh /tmp/dalvik.sh
+@adb shell sleep 3
+echo.
+echo Done!
+pause
+goto :home
+
+
+:artist
+echo ################################
+echo # Xiaomi Toolkit
+echo # Selected device: %DEVICE%
+echo ################################
+echo.
+echo Runtime: ART
+echo.
+@adb reboot recovery
+@adb wait-for-device
+@adb push %RES%\runtime\art.sh /tmp
+adb shell sh /tmp/art.sh
+@adb shell sleep 3
+echo.
+echo Done!
+pause
+goto :home
+
+:setup
+set RES=%USERPROFILE%\XiaomiTool\res
+mkdir %USERPROFILE%\PhonePics
+set CAMERA=%USERPROFILE\PhonePics
+set XT=%USERPROFILE\XiaomiTool
+mkdir %XT%\Backups
+set BACKFOLD
+goto :device
