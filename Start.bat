@@ -29,8 +29,8 @@ echo 2- Backup
 echo 3- Push and Pull
 echo 4- Reboot
 echo 5- Shell
-if %KK%==1 echo 6- ScreenRecord
-if %KK%==1 echo 7- Manage Runtime
+echo 6- ScreenRecord
+echo 7- Manage Runtime
 echo.
 echo 00- Settings
 echo 0- Exit
@@ -61,7 +61,7 @@ echo.
 echo Installer
 echo.
 echo 1- Apk       3- Recovery
-echo 2- Rom       4- Repartition
+echo 2- Rom       4- Root
 echo.
 echo 0- Go back
 echo.
@@ -69,7 +69,7 @@ set /p S= ? :
 if %S%==1 goto :apk
 if %S%==2 goto :rom
 if %S%==3 goto :rec1
-if %S%==3 goto :rep1
+if %S%==3 goto :root
 if %S%==0 goto :home
 echo Invalid Input? Try again!...
 pause
@@ -163,30 +163,26 @@ echo Done!
 @fastboot reboot
 goto :home
 
-:rep1
-if %DEVICE%==1 goto :rep2
-if %DEVICE%==2 goto :rep3
-echo Device not supported
-goto :home
-
-:rep2
+:root
 cls
 echo ################################
 echo # Xiaomi Toolkit
 echo # Selected device: %DEVICE%
 echo ################################
 echo.
-echo Repartition for Xiaomi mi2(s)
+echo Root
 echo.
 @adb reboot recovery
 @adb wait-for-device
 pause
-@adb pull %XT%\Aries\Repartition.sh /tmp/
-@adb shell chmod 0777 /tmp/repartition.sh
-@adb shell sh /tmp/repartition.sh
-echo Now you MUST install a rom. Sideload it
+@adb shell rm -rf /cache/recovery
+@adb shell mkdir /cache/recovery
+@adb shell "echo -e '--sideload' > /cache/recovery/command"
+@adb reboot recovery
+@adb wait-for-device
+@adb sideload %RES%\root.zip
 pause
-goto :rom
+goto :home
 
 :rep3
 cls
@@ -448,9 +444,9 @@ goto :home
 
 :setup
 set RES=%USERPROFILE%\XiaomiTool\res
-mkdir %USERPROFILE%\PhonePics
+@mkdir %USERPROFILE%\PhonePics
 set CAMERA=%USERPROFILE\PhonePics
 set XT=%USERPROFILE\XiaomiTool
-mkdir %XT%\Backups
+@mkdir %XT%\Backups
 set BACKFOLD
 goto :device
