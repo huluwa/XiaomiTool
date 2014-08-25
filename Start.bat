@@ -125,7 +125,7 @@ echo Recovery installer for Xiaomi mi2(s)
 echo.
 @adb reboot bootloader
 @fastboot devices
-@fastboot flash recovery %XT%\Aries\Recovery\recovery.img
+@fastboot flash recovery Aries\Recovery\recovery.img
 echo Done!
 @fastboot reboot
 goto :home
@@ -142,7 +142,7 @@ echo Recovery installer for Xiaomi mi3
 echo.
 @adb reboot bootloader
 @fastboot devices
-@fastboot flash recovery %XT%\Cancro\Recovery\recovery.img
+@fastboot flash recovery Cancro\Recovery\recovery.img
 echo Done!
 @fastboot reboot
 goto :home
@@ -158,7 +158,7 @@ echo Recovery installer for Xiaomi RedMi 1S
 echo.
 @adb reboot bootloader
 @fastboot devices
-@fastboot flash recovery %XT%\armani\Recovery\recovery.img
+@fastboot flash recovery armani\Recovery\recovery.img
 echo Done!
 @fastboot reboot
 goto :home
@@ -196,7 +196,7 @@ echo.
 @adb reboot recovery
 @adb wait-for-device
 pause
-@adb pull %XT%\Cancro\Repartition.sh /tmp/
+@adb pull Cancro\Repartition.sh /tmp/
 @adb shell chmod 0777 /tmp/repartition.sh
 @adb shell sh /tmp/repartition.sh
 echo Now you MUST install a rom. Sideload it
@@ -443,10 +443,9 @@ pause
 goto :home
 
 :setup
-set RES=%USERPROFILE%\XiaomiTool\res
-@mkdir %USERPROFILE%\PhonePics
-set CAMERA=%USERPROFILE\PhonePics
-set XT=%USERPROFILE\XiaomiTool
-@mkdir %XT%\Backups
-set BACKFOLD
+set RES=res
+@mkdir PhonePics
+set CAMERA=PhonePics\
+@mkdir Backups
+set BACKFOLD=Bakups\
 goto :device
