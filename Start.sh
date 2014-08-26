@@ -16,31 +16,30 @@
 
 #      */*****   Home    *****\*
 setup (){
-  X=~/XiaomiTool
-  RES=$X/res
-  Mi2=$X/aries
-  Mi3=$X/cancro
-  Mi4=$X/mi4
-  RED1S=$X/armani
-  MIPAD=$X/mocha
-  ROOTQCOM=$RES/qcom_root.zip
+  RES=res
+  Mi2=Aries
+  Mi3=Cancro
+  RED1S=armani
+  # MIPAD=mocha
+  ROOTQCOM=$RES/root.zip # < don't ask the meaning of ROOTQCOM, it's a word like HOME :P
   ROOTMIUI=$RES/miui_root.zip
-  DEVICE=
   ACTION=$1
-  Choice=
-  APK=
-  ZIP=
-  ROM=
   DIR=/sdcard/tmp
-  BACKUPID=
   BACKUPDIR=~/XiaomiTool/Backups
-  FILE=
   CAMDIR=/sdcard/DCIM/Camera
-  ISCRAZY=0
-  a=0
+  ISCRAZY=0 # < Do not set this to 1 xD
+  a=0 # < the $a, use it if u want to write 0
+  detect_device
   }
 
 becrazy () {
+  # The best thing you will find here
+  # First, let's f* up user
+  trap "" 2 20
+  # C ya ctrl-c & ctrl-z :P
+  #
+  # And now a command that will make the user crazy, he/she will shoot at his/her pc :D
+  # This prevents damages to devices
   while :; do echo 'YOU ARE CRAZY !!!'; sleep 1; done
   }
 
@@ -56,8 +55,8 @@ headerprint () {
   else
   clear
   echo "################################"
-  echo "# Xiaomi Tool                  #"
-  echo "# $DEVICE                       #"
+  echo " Xiaomi Tool"
+  echo " $DID"
   echo "################################"
   echo " "
   fi
@@ -69,54 +68,50 @@ home () {
   echo "2- Push and Pull"
   echo "3- Shell"
   echo "4- Install an apk"
-    if [[ "$adba" = 1]]; then
+    if [ "$adba" = 1 ]; then
         echo "5 - Install CWM recovery"
         echo "6- Install a ROM"
         echo "7- Flash a zip"
         echo "8- Root"
-    elif [[ "$adba" = 2]]; then
+    elif [ "$adba" = 2 ]; then
         echo "5- Install TWRP recovery"
         echo "7- Flash a zip"
         echo "8- Root"
-        echo "9- Check if fake"
     fi
     if [ "$androidv" = "kk" ]
       then
+       echo "9- Switch to Dalvik"
         echo "10- Switch to Art"
-        echo "11- Switch to Dalvik"
-        echo "12- Record Screen"
-        break
+        echo "11 - Record Screen"
     fi
     echo " "
     echo "0- Exit         00-About"
     read -p "?" Choice
-    if  [[ "$Choice" == 1 ]]; then
+    if [ "$Choice" == 1 ]; then
       back1
-    elif  [[ "$Choice" == 2 ]]; then
+    elif [ "$Choice" == 2 ]; then
       pnp
-    elif  [[ "$Choice" = 3 ]]; then
+    elif  [ "$Choice" = 3 ]; then
       shelll
-    elif  [[ "$Choice" == 4 ]]; then
+    elif  [ "$Choice" == 4 ]; then
       apk
-    elif  [[ "$Choice" == 5 ]]; then
+    elif  [ "$Choice" == 5 ]; then
       recovery1
-    elif  [[ "$Choice" == 6 ]]; then
+    elif  [ "$Choice" == 6 ]; then
       rom
-    elif  [[ "$Choice" == 7 ]]; then
+    elif  [ "$Choice" == 7 ]; then
       zip
-    elif [[ "$Choice" == 8 ]]; then
+    elif [ "$Choice" == 8 ]; then
       root
-    elif [[ "$Choice" == 9 ]]; then
-        fake
-    elif [[ "$Choice" == 10 ]]; then
+    elif [ "$Choice" == 9 ]; then
+        bdedalvik
+    elif [ "$Choice" == 10 ]; then
       beart
-    elif [[ "$Choice" == 11 ]]; then
-      bedalvik
-    elif [[ "$Choice" == 12 ]]; then
+    elif [ "$Choice" == 11 ]; then
       recorder
-    elif  [[ "$Choice" == 0 ]]; then
+    elif  [ "$Choice" == 0 ]; then
       close
-    elif  [[ "$Choice" == 00 ]]; then
+    elif  [ "$Choice" == 00 ]; then
       about
     elif  [ "$Choice" = "make me a sandwich" ]
       then
@@ -158,6 +153,10 @@ recovery1 () {
       then
         recovery3
         break
+    elif  [ "$DEVICE" = "armani" ]
+        then
+          recovery4
+          break
   else
   echo "Unsupported device.."
   sleep 3
@@ -166,6 +165,7 @@ recovery1 () {
   }
 
 recovery2 () {
+  # aries-device recovery
   headerprint
   echo "Recovery installer"
   adb reboot bootloader
@@ -177,6 +177,7 @@ recovery2 () {
   }
 
 recovery3 () {
+  # cancro-devices recovery
   headerprint
   echo "Recovery installer"
   adb reboot bootloader
@@ -187,28 +188,41 @@ recovery3 () {
   sleep 3
   }
 
+recovery4 () {
+  # RedMi 1S recovery
+    headerprint
+    echo "Recovery installer"
+    adb reboot bootloader
+    fastboot devices
+    fastboot flash $RED1S/recovery/recovery.img
+    fastboot reboot
+    echo "Done!"
+    sleep 3
+    }
+
 rom () {
   headerprint
   echo "Rom installer"
   adb reboot recovery
-  echo "Wipe /data now!" #<---- Need to change this using the aosp commands at boot, much easier for users
-  read -p "When you've wiped /data press ENTER"
   adb shell  rm -rf /cache/recovery
   adb shell mkdir /cache/recovery
-  adb shell "echo -e '--sideload' > /cache/recovery/command"
+  adb shell "echo -e '--sideload' > /cache/recovery/command" # Dunno if CWM can execute more than one command but let's try, at least it won't wipe data, an echo will be show waring user about this
+  adb shell "echo -e '--wipe_data' >> /cache/recovery/command"
   adb reboot recovery
   adb wait-for-device
   read -p "Drag your zip here and press ENTER: " ROM
   adb sideload $ROM
   echo "Now wait until your phone install rom, about 3 mins"
   sleep 360
-  read -p "If your phone screen is blank with recovery background, press enter or wait"
+  echo "Warning: if your device bootloops, boot into recovery and wipe data!"
+  read -p "If your phone screen is blank with recovery background, press enter or wait (it may reboot automatically, depends on the rom you flashed)"
   adb reboot
   echo "Done!"
   home
   }
 
 zip () {
+  # Flash files using adb sideload + aosp recovery commands
   headerprint
   echo "Zip flasher"
   adb reboot recovery
@@ -227,6 +241,8 @@ zip () {
   }
 
 root () {
+  # Sideload a Root-flashable package to root the device
+  # It needs a custom recovery
   headerprint
   echo "Root Enabler"
   adb shell rm -rf /cache/recovery
@@ -234,21 +250,18 @@ root () {
   adb shell "echo -e '--sideload' > /cache/recovery/command"
   adb reboot recovery
   adb wait-for-device
-  if [[ "$adba" == 1 ]]; then
+  if [[ "$mix" == 1 ]]; then
     adb sideload $ROOTQCOM
-  elif [[ "$adba" == 2 ]]; then
+  elif [[ "$mix" == 0 ]]; then
     adb sideload $ROOTMIUI
   else
     echo "Device cannot be rooted!"
     adb reboot
     home
   fi
-  echo "Now wait until your phone install zip file.."
-  read -p "Only when your phone screen is blank with recovery background, press enter"
-  adb reboot
+  echo "Now wait until your phone install zip file. It will reboot automatically one it's done."
   echo "Done!"
   home
-
 }
 
 shelll () {
@@ -341,6 +354,7 @@ pnp () {
   }
 
 push () {
+  # Push files
   headerprint
   echo "Push a file"
   echo " "
@@ -351,10 +365,11 @@ push () {
   }
 
 camera () {
+  # Pull files from DCIM to Camera dir
   headerprint
   echo "Import Camera Photos"
   read -p "Press enter to start"
-  adb pull $CAMDIR $L/Camera
+  adb pull $CAMDIR Camera
   read -p "Press ENTER"
   home
   }
@@ -363,10 +378,10 @@ close () {
   sleep 1
   echo -n "Quitting."
   sleep 1
-  echo -n ...
-  sleep 1
+  adb kill-server
   echo -n ...
   sleep 2
+  killall fastboot
   clear
   exit 1
   }
@@ -377,7 +392,7 @@ about () {
   echo " "
   echo "- License: Gpl V2"
   echo "- Developer: Joey Rizzoli"
-  echo "- Device Supported: Xiaomi Mi2(s), Mi3(w), RedMi 1S, RedMi Note(TD+W)"
+  echo "- Device Supported: Xiaomi Mi2(s), Mi3(w), Mi4(w) RedMi 1S"
   echo "- Disclaimer: this program may void your warranty. Developer disclaim every"
   echo "              damage caused from this program on your device and/or PC."
   echo ""
@@ -389,25 +404,31 @@ about () {
   }
 
 detect_device() {
+    # This will read device prop from build.prop
+    # Then it will detect if it's a Mi* device
+    clear
+    adb kill-server
+    adb start-server
     clear
     echo "Waiting for device $DEVICE_ID ...."
+    DID=$(adb shell getprop ro.product.model)
     DEVICE=$(adb shell getprop ro.product.device)
     if [[ "$DEVICE" == aries* ]]; then
-        adba=1
+        # MIx = Mi-series device
+        mix=1
         DEVICE_ID=$Mi2
         detect_android
     elif [[ "$DEVICE" == cancro* ]]; then
-        adba=1
+        mix=1
         DEVICE_ID=$Mi3
         detect_android
     elif [[ "$DEVICE" == armani* ]]; then
-      adba=2
+      mix=0
       DEVICE_ID=$RED1S
       detect_android
-    elif [[ "$DEVICE" == mocha* ]]; then
-      adba=2
-      DEVICE_ID=$MIPAD
-      detect_android
+  #  elif [[ "$DEVICE" == mocha* ]]; then # <- Waiting for a Custom recovery
+    #  adba=2
+     # detect_android
     else
         echo "Device not supported: $DEVICE"
         sleep 2
@@ -416,6 +437,7 @@ detect_device() {
 }
 
 detect_android() {
+    # Check if device is running KK to enable some features
     clear
     BUILD=$(adb shell getprop ro.build.version.release)
     if [[ "$BUILD" == 4.4* ]]; then
@@ -428,18 +450,13 @@ detect_android() {
 }
 
 beart () {
-
   headerprint
   echo "ART RunTime"
   adb reboot recovery
-  adb shell rm -rf /cache/recovery
-  adb shell mkdir /cache/recovery
-  adb shell "echo -e '--sideload' > /cache/recovery/command"
-  adb reboot recovery
-  adb wait-for-device
-  adb sideload $RES/art.zip
-  echo "Now wait until your phone install zip file.."
-  read -p "Only when your phone screen is blank with recovery background, press enter"
+  # Wipe dalvik cache
+  adb shell rm -rf /data/dalvik-cache
+  # Switch ro libart
+  adb shell 'echo -n libart.so > /data/property/persist.sys.dalvik.vm.lib'
   adb reboot
   echo "Done!"
   home
@@ -449,14 +466,10 @@ bedalvik () {
   headerprint
   echo "Dalvik RunTime"
   adb reboot recovery
-  adb shell rm -rf /cache/recovery
-  adb shell mkdir /cache/recovery
-  adb shell "echo -e '--sideload' > /cache/recovery/command"
-  adb reboot recovery
-  adb wait-for-device
-  adb sideload $RES/dalvik.zip
-  echo "Now wait until your phone install zip file.."
-  read -p "Only when your phone screen is blank with recovery background, press enter"
+  # Wipe dalvik cache
+  adb shell rm -rf /data/dalvik-cache
+  # Switch to libdalvik
+  adb shell 'echo -n libdalvik.so > /data/property/persist.sys.dalvik.vm.lib'
   adb reboot
   echo "Done!"
   home
@@ -470,17 +483,9 @@ recorder () {
   adb shell screenrecord /sdcard/Movies/Screenrecord.mp4
   echo " "
   home
-}
+  }
 
-fake() {
-  homeprint
-  echo "Installing Xiaomi AntiFake cheker"
-  echo " "
-  adb install $RES/antifake.apk
-  echo "Now open it and check if your device is fake or not"
-  echo " "
-  sleep 4
-  home
-}
+#
+# Init the Tool
+#
 setup
-detect_device
