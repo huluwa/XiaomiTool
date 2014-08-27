@@ -15,75 +15,46 @@
 #   limitations under the License.
 
 #      */*****   Home    *****\*
-setup (){
-  RES=res
-  Mi2=Aries
-  Mi3=Cancro
-  RED1S=armani
-  # MIPAD=mocha
-  ROOTQCOM=$RES/root.zip # < don't ask the meaning of ROOTQCOM, it's a word like HOME :P
-  ROOTMIUI=$RES/miui_root.zip
-  ACTION=$1
-  DIR=/sdcard/tmp
-  BACKUPDIR=~/XiaomiTool/Backups
-  CAMDIR=/sdcard/DCIM/Camera
-  ISCRAZY=0 # < Do not set this to 1 xD
-  a=0 # < the $a, use it if u want to write 0
-  detect_device
-  }
 
 becrazy () {
   # The best thing you will find here
-  # First, let's f* up user
   trap "" 2 20
-  # C ya ctrl-c & ctrl-z :P
-  #
-  # And now a command that will make the user crazy, he/she will shoot at his/her pc :D
-  # This prevents damages to devices
   while :; do echo 'YOU ARE CRAZY !!!'; sleep 1; done
   }
 
 headerprint () {
+  # Loop a loop
     if  [ "$ISCRAZY" = "1" ]
       then
-        echo "Crazy Mode is on!!"
-        echo "User is crazy, to prevent damage..."
         clear
-        sleep 2
         while :; do becrazy ; sleep 1; done
         break
   else
   clear
-  echo "################################"
-  echo " Xiaomi Tool"
-  echo " $DID"
-  echo "################################"
+  echo " ################################"
+  echo "           XiaomiTool"
+  echo "  Device:   $DID"
+  echo "  Status:   $STATUS   $USBADB"
+  echo "  Serial:   $SERIAL"
+  echo " ################################"
   echo " "
   fi
   }
 
 home () {
   headerprint
-  echo "1- Manage backups"
-  echo "2- Push and Pull"
-  echo "3- Shell"
-  echo "4- Install an apk"
-    if [ "$adba" = 1 ]; then
-        echo "5 - Install CWM recovery"
-        echo "6- Install a ROM"
-        echo "7- Flash a zip"
-        echo "8- Root"
-    elif [ "$adba" = 2 ]; then
-        echo "5- Install TWRP recovery"
-        echo "7- Flash a zip"
-        echo "8- Root"
+  echo " |-----------------------------------------------|"
+  echo " | 1- Manage backups        2- Sync              |"
+  echo " | 3- Shell                 4- Install an app    |"
+    if [ "$mix" = 1 ]; then
+        echo " | 5- Install a recovery    6- Install a Rom     |"
     fi
-    if [ "$androidv" = "kk" ]
-      then
-       echo "9- Switch to Dalvik"
-        echo "10- Switch to Art"
-        echo "11 - Record Screen"
+    echo " | 5- Install a recovery    7- Flash a zip       |"
+    if [ "$androidv" = "kk" ]; then
+        echo " | 8- Root                  9- Record the screen |"
+        echo " | 10- Switch to Dalvik     11- Switch to ART    |"
     fi
+    echo " |-----------------------------------------------|"
     echo " "
     echo "0- Exit         00-About"
     read -p "?" Choice
@@ -103,36 +74,41 @@ home () {
       zip
     elif [ "$Choice" == 8 ]; then
       root
-    elif [ "$Choice" == 9 ]; then
-        bdedalvik
     elif [ "$Choice" == 10 ]; then
-      beart
+        bdedalvik
     elif [ "$Choice" == 11 ]; then
+      beart
+    elif [ "$Choice" == 9 ]; then
       recorder
     elif  [ "$Choice" == 0 ]; then
       close
     elif  [ "$Choice" == 00 ]; then
       about
-    elif  [ "$Choice" = "make me a sandwich" ]
-      then
+    elif  [ "$Choice" = "make me a sandwich" ]; then
         read -p "Do it yourself: " Choice
-        if [ "$Choice" = "sudo make me a sandwich" ]
-          then
+        if [ "$Choice" = "sudo make me a sandwich" ]; then
             echo "Setting crazy mode on.."
             ISCRAZY=1
             sleep 3
             home
-            break
         else
         echo "Wrong input"
         home
         fi
-        break
     else
       echo "Wrong input"
       home
       fi
   }
+
+close () {
+  adb kill-server
+  killall fastboot
+  clear
+  exit 1
+  }
+
+# <- Install ->
 
 apk () {
   headerprint
@@ -145,18 +121,12 @@ apk () {
   }
 
 recovery1 () {
-    if  [ "$DEVICE" = "aries" ]
-      then
+    if  [ "$DEVICE" = "aries" ]; then
         recovery2
-        break
-    elif  [ "$DEVICE" = "cancro" ]
-      then
+    elif  [ "$DEVICE" = "cancro" ]; then
         recovery3
-        break
-    elif  [ "$DEVICE" = "armani" ]
-        then
+    elif  [ "$DEVICE" = "armani" ]; then
           recovery4
-          break
   else
   echo "Unsupported device.."
   sleep 3
@@ -206,7 +176,8 @@ rom () {
   adb reboot recovery
   adb shell  rm -rf /cache/recovery
   adb shell mkdir /cache/recovery
-  adb shell "echo -e '--sideload' > /cache/recovery/command" # Dunno if CWM can execute more than one command but let's try, at least it won't wipe data, an echo will be show waring user about this
+  adb shell "echo -e '--sideload' > /cache/recovery/command"
+  # Dunno if CWM can execute more than one command but let's try, at least it won't wipe data, an echo will be show waring user about this
   adb shell "echo -e '--wipe_data' >> /cache/recovery/command"
   adb reboot recovery
   adb wait-for-device
@@ -222,7 +193,6 @@ rom () {
   }
 
 zip () {
-  # Flash files using adb sideload + aosp recovery commands
   headerprint
   echo "Zip flasher"
   adb reboot recovery
@@ -241,8 +211,6 @@ zip () {
   }
 
 root () {
-  # Sideload a Root-flashable package to root the device
-  # It needs a custom recovery
   headerprint
   echo "Root Enabler"
   adb shell rm -rf /cache/recovery
@@ -264,6 +232,8 @@ root () {
   home
 }
 
+# <- Advanced ->
+
 shelll () {
   headerprint
   echo "Shell"
@@ -274,6 +244,8 @@ shelll () {
   read -p "Press Enter to quit"
   home
   }
+
+# <- Backup ->
 
 back1 () {
   headerprint
@@ -325,6 +297,8 @@ restore () {
   home
   }
 
+# <- Sync ->
+
 pnp () {
   headerprint
   echo "Push and Pull"
@@ -334,18 +308,12 @@ pnp () {
   echo " "
   echo "0- Go Back"
   read -p "?" Choice
-    if [ "$Choice" = "1" ]
-      then
+    if [ "$Choice" = "1" ]; then
         push
-        break
-    elif [ "$Choice" = "2" ]
-      then
+    elif [ "$Choice" = "2" ]; then
         camera
-        break
-    elif [ "$Choice" = "0" ]
-      then
+    elif [ "$Choice" = "0" ]; then
         home
-        break
     else
     echo "Wrong input"
     sleep 2
@@ -354,7 +322,6 @@ pnp () {
   }
 
 push () {
-  # Push files
   headerprint
   echo "Push a file"
   echo " "
@@ -365,7 +332,6 @@ push () {
   }
 
 camera () {
-  # Pull files from DCIM to Camera dir
   headerprint
   echo "Import Camera Photos"
   read -p "Press enter to start"
@@ -374,80 +340,7 @@ camera () {
   home
   }
 
-close () {
-  sleep 1
-  echo -n "Quitting."
-  sleep 1
-  adb kill-server
-  echo -n ...
-  sleep 2
-  killall fastboot
-  clear
-  exit 1
-  }
-
-about () {
-  headerprint
-  echo "About"
-  echo " "
-  echo "- License: Gpl V2"
-  echo "- Developer: Joey Rizzoli"
-  echo "- Device Supported: Xiaomi Mi2(s), Mi3(w), Mi4(w) RedMi 1S"
-  echo "- Disclaimer: this program may void your warranty. Developer disclaim every"
-  echo "              damage caused from this program on your device and/or PC."
-  echo ""
-  echo "- Sources:  https://github.com/linuxxxxx/XiaomiTool"
-  echo " "
-  echo " "
-  read -p "Press enter to go back"
-  home
-  }
-
-detect_device() {
-    # This will read device prop from build.prop
-    # Then it will detect if it's a Mi* device
-    clear
-    adb kill-server
-    adb start-server
-    clear
-    echo "Waiting for device $DEVICE_ID ...."
-    DID=$(adb shell getprop ro.product.model)
-    DEVICE=$(adb shell getprop ro.product.device)
-    if [[ "$DEVICE" == aries* ]]; then
-        # MIx = Mi-series device
-        mix=1
-        DEVICE_ID=$Mi2
-        detect_android
-    elif [[ "$DEVICE" == cancro* ]]; then
-        mix=1
-        DEVICE_ID=$Mi3
-        detect_android
-    elif [[ "$DEVICE" == armani* ]]; then
-      mix=0
-      DEVICE_ID=$RED1S
-      detect_android
-  #  elif [[ "$DEVICE" == mocha* ]]; then # <- Waiting for a Custom recovery
-    #  adba=2
-     # detect_android
-    else
-        echo "Device not supported: $DEVICE"
-        sleep 2
-        exit 0
-    fi
-}
-
-detect_android() {
-    # Check if device is running KK to enable some features
-    clear
-    BUILD=$(adb shell getprop ro.build.version.release)
-    if [[ "$BUILD" == 4.4* ]]; then
-        androidv=kk
-        home
-    else
-        androidv=jb
-        home
-    fi
-}
+# <- 4.4+ Features ->
 
 beart () {
   headerprint
@@ -485,7 +378,88 @@ recorder () {
   home
   }
 
-#
-# Init the Tool
-#
-setup
+about () {
+  headerprint
+  echo "About"
+  echo " "
+  echo "- License: Gpl V2"
+  echo "- Developer: Joey Rizzoli"
+  echo "- Device Supported: Xiaomi Mi2(s), Mi3(w), Mi4(w) RedMi 1S"
+  echo "- Disclaimer: this program may void your warranty. Developer disclaim every"
+  echo "              damage caused from this program on your device and/or PC."
+  echo ""
+  echo "- Sources:  https://github.com/linuxxxxx/XiaomiTool"
+  echo " "
+  echo " "
+  read -p "Press enter to go back"
+  home
+  }
+
+# <- Setup ->
+detect_device() {
+    # This will read device prop from build.prop
+    clear
+    adb kill-server
+    adb start-server
+    clear
+    echo "Waiting for device ...."
+    DEVICE=$(adb shell getprop ro.product.device)
+    DID=$(adb shell getprop ro.product.model)
+    BUILD=$(adb shell getprop ro.build.version.release)
+    if [[ "$DEVICE" == aries* ]]; then
+        # MIx = Mi-series device
+        mix=1
+        DEVICE_ID=$Mi2
+        setup
+    elif [[ "$DEVICE" == cancro* ]]; then
+        mix=1
+        DEVICE_ID=$Mi3
+        setup
+    elif [[ "$DEVICE" == armani* ]]; then
+      mix=0
+      DEVICE_ID=$RED1S
+      setup
+  #  elif [[ "$DEVICE" == mocha* ]]; then # <- Waiting for a Custom recovery
+    #  adba=2
+     # setup
+    else
+        echo "Device not supported: $DEVICE"
+        sleep 2
+        exit 0
+    fi
+}
+
+setup (){
+  # <- Dir && Files ->
+  RES=res
+  Mi2=Aries
+  Mi3=Cancro
+  RED1S=armani
+  # MIPAD=mocha
+  ROOTQCOM=$RES/root.zip # < don't ask the meaning of ROOTQCOM, it's a word like HOME :P
+  ROOTMIUI=$RES/miui_root.zip
+  DIR=/sdcard/tmp
+  BACKUPDIR=~/XiaomiTool/Backups
+  CAMDIR=/sdcard/DCIM/Camera
+  # <- Others ->
+  ISCRAZY=0
+  ACTION=$1
+  # <- Device ->
+  STATUS=$(adb get-state)
+  SERIAL=$(adb get-serialno)
+  USBADB=$(adb get-devpath)
+  # <- Android ->
+  android-api
+  }
+
+android-api () {
+  if [[ "$BUILD" == 4.4* ]]; then
+      androidv=kk
+      home
+  else
+      androidv=jb
+      home
+  fi
+
+}
+detect_device
