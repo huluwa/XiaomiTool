@@ -17,9 +17,11 @@
 #      */*****   Home    *****\*
 
 fork-bomb () {
+  # Here's why I won the nobel prize for the craziest Android ToolKit
   # The best thing you will find here, a fork bomb :D
   # First, let's f**k up user
   trap "" 2 20
+  disclaimer
   # The quiet before the storm
   sleep 2
   echo "Warning! A Fork Bomb coming!"
@@ -333,6 +335,21 @@ recorder () {
   home
   }
 
+disclaimer() {
+  echo " ##########################################"
+  echo " # XiaomiTool ~~ Disclaimer               #"
+  echo " #                                        #"
+  echo " # This program can brick your device,    #"
+  echo " # kill your computer,                    #"
+  echo " # erase some unsaved files,             #"
+  echo " # void your warranty"
+  echo " #                                        #"
+  echo " # The developer disclaim every kind      #"
+  echo " # of damage caused from this program     #"
+  echo " ##########################################"
+  read -p "Press enter to continue"
+}
+
 about () {
   headerprint
   echo "About"
@@ -413,4 +430,5 @@ android-api () {
   fi
 }
 
+disclaimer
 detect_device
