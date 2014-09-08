@@ -33,75 +33,77 @@ fork-bomb () {
 headerprint () {
     if  [ "$ISCRAZY" = "1" ]; then
       fork-bomb
-  else
-  clear
-  echo " ################################"
-  echo "           XiaomiTool"
-  echo "  Device:   $DID"
-  echo "  Status:   $STATUS   $USBADB"
-  echo "  Serial:   $SERIAL"
-  echo " ################################"
-  echo " "
   fi
+  clear
+  echo "|-----------------------------------------------|"
+  echo "| XiaomiTool"
+  echo "|"
+  echo "| Device:   $DID"
+  echo "| Status:   $STATUS   $USBADB"
+  echo "| Serial:   $SERIAL"
+  echo "|-----------------------------------------------|"
   }
 
 home () {
   headerprint
-  echo " |-----------------------------------------------|"
-  echo " | 1- Manage backups        2- Sync              |"
-  echo " | 3- Shell                 4- Install an app    |"
+  echo "|                                               |"
+  echo "| 1- Manage backups        2- Sync              |"
+  echo "| 3- Shell                 4- Install an app    |"
     if [ "$mix" = 1 ]; then
-        echo " | 5- Install a recovery    6- Install a Rom     |"
+        echo "| 5- Install a recovery    6- Install a Rom     |"
     fi
-    echo " | 5- Install a recovery    7- Flash a zip       |"
+    echo "| 5- Install a recovery    7- Flash a zip       |"
     if [ "$androidv" = "kk" ]; then
-        echo " | 8- Root                  9- Record the screen |"
-        echo " | 10- Switch to Dalvik     11- Switch to ART    |"
+        echo "| 8- Root                  9- Record the screen |"
+        echo "| 10- Switch to Dalvik     11- Switch to ART    |"
     fi
-    echo " |-----------------------------------------------|"
-    echo " |                                               |"
-    echo " | 0- Exit         00-About                      |"
-    echo " |-----------------------------------------------|"
-    read -p "?" Choice
-    if [ "$Choice" == 1 ]; then
+    echo "| 12- Advanced                                  |"
+    echo "|-----------------------------------------------|"
+    echo "|                                               |"
+    echo "| 0- Exit         00-About                      |"
+    echo "|-----------------------------------------------|"
+    read -p "? " CHOICE
+    if [ "$CHOICE" == 1 ]; then
       back1
-    elif [ "$Choice" == 2 ]; then
+    elif [ "$CHOICE" == 2 ]; then
       pnp
-    elif  [ "$Choice" = 3 ]; then
+    elif  [ "$CHOICE" = 3 ]; then
       shelll
-    elif  [ "$Choice" == 4 ]; then
+    elif  [ "$CHOICE" == 4 ]; then
       apk
-    elif  [ "$Choice" == 5 ]; then
+    elif  [ "$CHOICE" == 5 ]; then
       recovery
-    elif  [ "$Choice" == 6 ]; then
+    elif  [ "$CHOICE" == 6 ]; then
       rom
-    elif  [ "$Choice" == 7 ]; then
+    elif  [ "$CHOICE" == 7 ]; then
       zip
-    elif [ "$Choice" == 8 ]; then
+    elif [ "$CHOICE" == 8 ]; then
       root
-    elif [ "$Choice" == 10 ]; then
+    elif [ "$CHOICE" == 10 ]; then
         bdedalvik
-    elif [ "$Choice" == 11 ]; then
+    elif [ "$CHOICE" == 11 ]; then
       beart
-    elif [ "$Choice" == 9 ]; then
+    elif [ "$CHOICE" == 9 ]; then
       recorder
-    elif  [ "$Choice" == 0 ]; then
+    elif  [ "$CHOICE" == 0 ]; then
       close
-    elif  [ "$Choice" == 00 ]; then
+    elif  [ "$CHOICE" == 00 ]; then
       about
-    elif  [ "$Choice" = "make me a sandwich" ]; then
-        read -p "Do it yourself: " Choice
-        if [ "$Choice" = "sudo make me a sandwich" ]; then
+    elif  [ "$CHOICE" = "make me a sandwich" ]; then
+        read -p "Do it yourself: " CHOICE
+        if [ "$CHOICE" = "sudo make me a sandwich" ]; then
             echo "Advanced mode enabled!"
             ISCRAZY=1
             sleep 3
             home
         else
         echo "Wrong input"
+        sleep 2
         home
         fi
     else
       echo "Wrong input"
+      sleep 2
       home
       fi
   }
@@ -130,9 +132,10 @@ recovery () {
   headerprint
   echo "Recovery installer"
   adb reboot bootloader
-  fastboot devices
+  echo "Flashing recovery on your $DID"
   fastboot flash $DDIR/recovery/recovery.img
   fastboot reboot
+  echo " "
   echo "Done!"
   sleep 3
   }
@@ -140,6 +143,7 @@ recovery () {
 rom () {
   headerprint
   echo "Rom installer"
+  echo " "
   adb reboot recovery
   adb shell  rm -rf /cache/recovery
   adb shell mkdir /cache/recovery
@@ -147,11 +151,12 @@ rom () {
   # Dunno if CWM can execute more than one command but let's try, at least it won't wipe data, an echo will be show waring user about this
   adb shell "echo -e '--wipe_data' >> /cache/recovery/command"
   adb reboot recovery
-  adb wait-for-device
+  isavailable
   read -p "Drag your zip here and press ENTER: " ROM
+  sleep 180 # < Wait until it wipes data
   adb sideload $ROM
-  echo "Now wait until your phone install rom, about 3 mins"
-  sleep 360
+  echo "Now wait until your phone install rom, about 4 minutes"
+  sleep 240
   echo "Warning: if your device bootloops, boot into recovery and wipe data!"
   read -p "If your phone screen is blank with recovery background, press enter or wait (it may reboot automatically, depends on the rom you flashed)"
   adb reboot
@@ -162,12 +167,13 @@ rom () {
 zip () {
   headerprint
   echo "Zip flasher"
+  echo " "
   adb reboot recovery
   adb shell rm -rf /cache/recovery
   adb shell mkdir /cache/recovery
   adb shell "echo -e '--sideload' > /cache/recovery/command"
   adb reboot recovery
-  adb wait-for-device
+  isavailable
   read -p "Drag your zip here and press ENTER: " ZIP
   adb sideload $ZIP
   echo "Now wait until your phone install zip file.."
@@ -180,20 +186,20 @@ zip () {
 root () {
   headerprint
   echo "Root Enabler"
+  echo " "
+  echo "Are you running any MiUi STABLE build?"
+  read -p "[ y/n ] ? " CHOICE
+  if [[ "$CHOICE" == "y" ]]; then
+    ROOTZIP=$ROOTMIUI
+  elif [[ "$CHOICE" == "n" ]]; then
+    ROOTZIP=$ROOTAOSP
+  fi
   adb shell rm -rf /cache/recovery
   adb shell mkdir /cache/recovery
   adb shell "echo -e '--sideload' > /cache/recovery/command"
   adb reboot recovery
   adb wait-for-device
-  if [[ "$mix" == 1 ]]; then
-    adb sideload $ROOTQCOM
-  elif [[ "$mix" == 0 ]]; then
-    adb sideload $ROOTMIUI
-  else
-    echo "Device cannot be rooted!"
-    adb reboot
-    home
-  fi
+  adb sideload $ROOTZIP
   echo "Now wait until your phone install zip file. It will reboot automatically one it's done."
   echo "Done!"
   home
@@ -221,12 +227,12 @@ back1 () {
   echo "1- Backup    2-Restore"
   echo " "
   echo "0- Go Back"
-  read -p "?" Choice
-    if [ "$Choice" = "1" ]; then
+  read -p "?" CHOICE
+    if [ "$CHOICE" = "1" ]; then
         backup
-    elif [ "$Choice" = "2" ]; then
+    elif [ "$CHOICE" = "2" ]; then
         restore
-    elif [ "$Choice" = "0" ]; then
+    elif [ "$CHOICE" = "0" ]; then
         home
     else
     echo "Wrong input"
@@ -268,12 +274,12 @@ pnp () {
   echo "2- Import Camera Photos"
   echo " "
   echo "0- Go Back"
-  read -p "?" Choice
-    if [ "$Choice" = "1" ]; then
+  read -p "?" CHOICE
+    if [ "$CHOICE" = "1" ]; then
         push
-    elif [ "$Choice" = "2" ]; then
+    elif [ "$CHOICE" = "2" ]; then
         camera
-    elif [ "$Choice" = "0" ]; then
+    elif [ "$CHOICE" = "0" ]; then
         home
     else
     echo "Wrong input"
@@ -295,6 +301,7 @@ push () {
 camera () {
   headerprint
   echo "Import Camera Photos"
+  echo " "
   read -p "Press enter to start"
   adb pull $CAMDIR Camera
   read -p "Press ENTER"
@@ -306,6 +313,7 @@ camera () {
 beart () {
   headerprint
   echo "ART RunTime"
+  echo " "
   adb reboot recovery
   adb shell rm -rf /data/dalvik-cache
   adb shell 'echo -n libart.so > /data/property/persist.sys.dalvik.vm.lib'
@@ -317,6 +325,7 @@ beart () {
 bedalvik () {
   headerprint
   echo "Dalvik RunTime"
+  echo " "
   adb reboot recovery
   adb shell rm -rf /data/dalvik-cache
   adb shell 'echo -n libdalvik.so > /data/property/persist.sys.dalvik.vm.lib'
@@ -326,23 +335,27 @@ bedalvik () {
   }
 
 recorder () {
-  homeprint
+  headerprint
   echo "Screen Recorder"
   echo " "
-  echo " Press CTRL+C when you want to quit"
-  adb shell screenrecord /sdcard/Movies/Screenrecord.mp4
-  echo " "
+  echo "Press CTRL+C when you want to quit"
+  NAME=$(date "+%N")
+  adb shell screenrecord /sdcard/Movies/$NAME.mp4
+  echo "Done! You'll find the file on your phone"
   home
   }
 
+# <- Other stuffs ->
+
 disclaimer() {
+  clear
   echo " ##########################################"
   echo " # XiaomiTool ~~ Disclaimer               #"
   echo " #                                        #"
   echo " # This program can brick your device,    #"
   echo " # kill your computer,                    #"
-  echo " # erase some unsaved files,             #"
-  echo " # void your warranty"
+  echo " # erase some unsaved files,              #"
+  echo " # void your warranty                     #"
   echo " #                                        #"
   echo " # The developer disclaim every kind      #"
   echo " # of damage caused from this program     #"
@@ -366,6 +379,14 @@ about () {
   read -p "Press enter to go back"
   home
   }
+
+isavailable () {
+  if [[ "$STATUS" == device ]]; then
+    echo " "
+  else
+    isavailable
+  fi
+}
 
 # <- Setup ->
 detect_device() {
@@ -393,6 +414,10 @@ detect_device() {
     #  adba=2
     # DDIR=$MIP1
      # setup
+  #  elif [[ "$DEVICE" == taurus* ]]; then # <- Waiting for a Custom recovery
+    #  adba=1
+    # DDIR=$MI2A
+     # setup
     else
         echo "Device not supported: $DEVICE"
         sleep 2
@@ -402,12 +427,12 @@ detect_device() {
 
 setup (){
   RES=res
-  DEVICE=Unknow
   Mi2=Aries
   Mi3=Cancro
   RED1S=armani
   # MIP1=mocha
-  ROOTQCOM=$RES/root.zip # < don't ask the meaning of ROOTQCOM
+  # M2A=taurus
+  ROOTAOSP=$RES/root.zip
   ROOTMIUI=$RES/miui_root.zip
   DIR=/sdcard/tmp
   BACKUPDIR=~/XiaomiTool/Backups
@@ -418,15 +443,14 @@ setup (){
   SERIAL=$(adb get-serialno)
   USBADB=$(adb get-devpath)
   android-api
+  home
   }
 
 android-api () {
   if [[ "$BUILD" == 4.4* ]]; then
       androidv=kk
-      home
   else
       androidv=jb
-      home
   fi
 }
 
