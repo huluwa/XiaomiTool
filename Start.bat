@@ -68,7 +68,7 @@ set /p S= ? :
 if %S%==1 goto :apk
 if %S%==2 goto :rom
 if %S%==3 goto :rec1
-if %S%==3 goto :root
+if %S%==4 goto :root
 if %S%==0 goto :home
 echo Invalid Input? Try again!...
 pause
