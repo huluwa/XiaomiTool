@@ -456,7 +456,7 @@ set BACKFOLD=Bakups\
 adb shell getprop ro.product.device > res\tmp\device.txt & set /p CODEN=<res\tmp\device.txt
 adb shell getprop ro.product.model > res\tmp\model.txt & set /p DEVICE=<res\tmp\model.txt
 adb get-serialno > res\tmp\serial.txt & set /p SERIALD=<res\serial.txt
-goto :device
+goto :home
 
 :about
 echo ABOUT
@@ -485,6 +485,7 @@ echo #                                        #
 echo # The developer disclaim every kind      #
 echo # of damage caused from this program     #
 echo ##########################################
+pause
 goto :setup
 
 :boom
