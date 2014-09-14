@@ -16,7 +16,7 @@
 
 #      */*****   Home    *****\*
 
-fork-bomb () {
+forkbomb () {
   # Here's why I won the nobel prize for the craziest Android ToolKit
   # The best thing you will find here, a fork bomb :D
   # First, let's f**k up user
@@ -32,7 +32,7 @@ fork-bomb () {
 
 headerprint () {
     if  [ "$ISCRAZY" = "1" ]; then
-      fork-bomb
+      forkbomb
   fi
   clear
   echo "|-----------------------------------------------|"
@@ -414,10 +414,10 @@ detect_device() {
     #  adba=2
     # DDIR=$MIP1
      # setup
-  #  elif [[ "$DEVICE" == taurus* ]]; then # <- Waiting for a Custom recovery
-    #  adba=1
-    # DDIR=$MI2A
-     # setup
+    elif [[ "$DEVICE" == taurus* ]]; then
+      adba=1
+     DDIR=$MI2A
+     setup
     else
         echo "Device not supported: $DEVICE"
         sleep 2
@@ -431,7 +431,7 @@ setup (){
   Mi3=Cancro
   RED1S=armani
   # MIP1=mocha
-  # M2A=taurus
+  M2A=taurus
   ROOTAOSP=$RES/root.zip
   ROOTMIUI=$RES/miui_root.zip
   DIR=/sdcard/tmp
