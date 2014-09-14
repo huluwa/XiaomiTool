@@ -17,6 +17,7 @@
 cls
 goto :disclaimer
 
+
 :home
 cls
 echo |-----------------------------------------------|
@@ -115,9 +116,11 @@ goto :home
 
 
 :rec1
-if %DEVICE%==1 goto :rec2
-if %DEVICE%==2 goto :rec3
-if %DEVICE%==3 goto :rec4
+if %DEVICES%==1 goto :rec2
+if %DEVICES%==2 goto :rec3
+if %DEVICES%==3 goto :rec4
+if %DEVICES%==3 goto :rec5
+
 
 :rec2
 cls
@@ -170,6 +173,24 @@ echo.
 echo Done!
 @fastboot reboot
 goto :home
+
+:rec5
+cls
+echo |-----------------------------------------------|
+echo | XiaomiTool
+echo |
+echo | Device: %DEVICE%
+echo | Serial: %SERIALD%
+echo |-----------------------------------------------|
+echo Recovery installer for Xiaomi Mi2a
+echo.
+@adb reboot bootloader
+@fastboot devices
+@fastboot flash recovery taurus\Recovery\recovery.img
+echo Done!
+@fastboot reboot
+goto :home
+
 
 :root
 cls
@@ -456,7 +477,12 @@ set BACKFOLD=Bakups\
 adb shell getprop ro.product.device > res\tmp\device.txt & set /p CODEN=<res\tmp\device.txt
 adb shell getprop ro.product.model > res\tmp\model.txt & set /p DEVICE=<res\tmp\model.txt
 adb get-serialno > res\tmp\serial.txt & set /p SERIALD=<res\serial.txt
-goto :home
+if %CODE%==aries set DEVICES=1 & goto :home
+if %CODE%==cancro set DEVICES=2 & goto :home
+if %CODE%==armani set DEVICES=3 & goto :home
+if %CODE%==taurus set DEVICES=4 & goto :home
+echo There was a problem while detecting the device
+pause
 
 :about
 echo ABOUT
@@ -474,17 +500,17 @@ pause
 goto :home
 
 :disclaimer
-echo ##########################################
-echo  # XiaomiTool ~~ Disclaimer               #
-echo #                                        #
-echo # This program can brick your device,    #
-echo # kill your computer,                    #
-echo # erase some unsaved files,              #
-echo # void your warranty                     #
-echo #                                        #
-echo # The developer disclaim every kind      #
-echo # of damage caused from this program     #
-echo ##########################################
+echo ******************************************
+echo  * XiaomiTool ~~ Disclaimer               *
+echo *                                        *
+echo * This program can brick your device,    *
+echo * kill your computer,                    *
+echo * erase some unsaved files,              *
+echo * void your warranty                     *
+echo *                                        *
+echo * The developer disclaim every kind      *
+echo * of damage caused from this program     *
+echo ******************************************
 pause
 goto :setup
 
