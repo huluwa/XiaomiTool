@@ -442,11 +442,11 @@ setup (){
   STATUS=$(adb get-state)
   SERIAL=$(adb get-serialno)
   USBADB=$(adb get-devpath)
-  android-api
+  android_api
   home
   }
 
-android-api () {
+android_api () {
   if [[ "$BUILD" == 4.4* ]]; then
       androidv=kk
   else
