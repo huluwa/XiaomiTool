@@ -116,13 +116,6 @@ goto :home
 
 
 :rec1
-if %DEVICES%==1 goto :rec2
-if %DEVICES%==2 goto :rec3
-if %DEVICES%==3 goto :rec4
-if %DEVICES%==3 goto :rec5
-
-
-:rec2
 cls
 echo |-----------------------------------------------|
 echo | XiaomiTool
@@ -130,67 +123,14 @@ echo |
 echo | Device: %DEVICE%
 echo | Serial: %SERIALD%
 echo |-----------------------------------------------|
-echo Recovery installer for Xiaomi mi2(s)
+echo Recovery installer for Xiaomi %DEVICE%
 echo.
 @adb reboot bootloader
 @fastboot devices
-@fastboot flash recovery Aries\Recovery\recovery.img
+@fastboot flash recovery %CODENAME%\Recovery\recovery.img
 echo Done!
 @fastboot reboot
 goto :home
-
-
-:rec3
-cls
-echo |-----------------------------------------------|
-echo | XiaomiTool
-echo |
-echo | Device: %DEVICE%
-echo | Serial: %SERIALD%
-echo |-----------------------------------------------|
-echo Recovery installer for Xiaomi mi3w and mi4w
-echo.
-@adb reboot bootloader
-@fastboot devices
-@fastboot flash recovery Cancro\Recovery\recovery.img
-echo Done!
-@fastboot reboot
-goto :home
-
-:rec4
-cls
-echo |-----------------------------------------------|
-echo | XiaomiTool
-echo |
-echo | Device: %DEVICE%
-echo | Serial: %SERIALD%
-echo |-----------------------------------------------|
-echo Recovery installer for Xiaomi RedMi 1S
-echo.
-@adb reboot bootloader
-@fastboot devices
-@fastboot flash recovery armani\Recovery\recovery.img
-echo Done!
-@fastboot reboot
-goto :home
-
-:rec5
-cls
-echo |-----------------------------------------------|
-echo | XiaomiTool
-echo |
-echo | Device: %DEVICE%
-echo | Serial: %SERIALD%
-echo |-----------------------------------------------|
-echo Recovery installer for Xiaomi Mi2a
-echo.
-@adb reboot bootloader
-@fastboot devices
-@fastboot flash recovery taurus\Recovery\recovery.img
-echo Done!
-@fastboot reboot
-goto :home
-
 
 :root
 cls
@@ -466,30 +406,39 @@ pause
 goto :home
 
 :setup
-title XiaomiTool
 set RES=res
 @mkdir PhonePics
-cls
 set CAMERA=PhonePics\
 @mkdir Backups
-cls
 set BACKFOLD=Bakups\
-adb shell getprop ro.product.device > res\tmp\device.txt & set /p CODEN=<res\tmp\device.txt
-adb shell getprop ro.product.model > res\tmp\model.txt & set /p DEVICE=<res\tmp\model.txt
-adb get-serialno > res\tmp\serial.txt & set /p SERIALD=<res\serial.txt
-if %CODE%==aries set DEVICES=1 & goto :home
-if %CODE%==cancro set DEVICES=2 & goto :home
-if %CODE%==armani set DEVICES=3 & goto :home
-if %CODE%==taurus set DEVICES=4 & goto :home
-echo There was a problem while detecting the device
+cls
+echo |-----------------------------------------------|
+echo | XiaomiTool
+echo |
+echo |-----------------------------------------------|
+echo.
+echo Select your device
+echo 1- Xiaomi Mi2(s)
+echo 2- Xiaomi Mi2 A
+echo 3- Xiaomi Mi3w
+echo 4- Xiaomi Mi4w
+echo 5- Xiaomi RedMi 1S
+set /p S= ? :
+if %S%==1 set DEVICE=Mi2(s) & set DEVICES=1 & set CODENAME=aries & goto :home
+if %S%==2 set DEVICE=Mi 2A & set DEVICES=4 & set CODENAME=taurus & goto :home
+if %S%==3 set DEVICE=Mi 3w & set DEVICES=2 & set CODENAME=cancro & goto :home
+if %S%==3 set DEVICE=Mi 4w & set DEVICES=2 & set CODENAME=cancro & goto :home
+if %S%==3 set DEVICE=RedMi 1S & set DEVICES=3 & set CODENAME=armani & goto :home
+echo Wrong input!
 pause
+goto :setup
 
 :about
 echo ABOUT
 echo.
 echo License: GPL v2
 echo Developer: Joey Rizzoli [@linuxx]
-echo Supported Devices: Mi2(s), Mi3w, Mi4w, RedMi 1s
+echo Supported Devices: Mi2(s), Mi2 A, Mi3w, Mi4w, RedMi 1s
 echo Sources: https://github.com/linuxxxxx/XiaomiTool
 echo
 echo XiaomiTool is an OpenSource
@@ -501,7 +450,7 @@ goto :home
 
 :disclaimer
 echo ******************************************
-echo  * XiaomiTool ~~ Disclaimer               *
+echo * XiaomiTool ~~ Disclaimer               *
 echo *                                        *
 echo * This program can brick your device,    *
 echo * kill your computer,                    *
