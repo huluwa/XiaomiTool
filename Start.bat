@@ -1,18 +1,18 @@
 @echo off
 
-#   Copyright 2014 Joey Rizzoli
-#
-#   Licensed under the Apache License, Version 2.0 (the "License");
-#   you may not use this file except in compliance with the License.
-#   You may obtain a copy of the License at
-#
-#       http://www.apache.org/licenses/LICENSE-2.0
-#
-#   Unless required by applicable law or agreed to in writing, software
-#   distributed under the License is distributed on an "AS IS" BASIS,
-#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#   See the License for the specific language governing permissions and
-#   limitations under the License.
+::   Copyright 2014 Joey Rizzoli
+::
+::   Licensed under the Apache License, Version 2.0 (the "License");
+::   you may not use this file except in compliance with the License.
+::   You may obtain a copy of the License at
+::
+::       http://www.apache.org/licenses/LICENSE-2.0
+::
+::   Unless required by applicable law or agreed to in writing, software
+::   distributed under the License is distributed on an "AS IS" BASIS,
+::   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+::   See the License for the specific language governing permissions and
+::   limitations under the License.
 
 cls
 goto :disclaimer
@@ -20,21 +20,21 @@ goto :disclaimer
 
 :home
 cls
-echo |-----------------------------------------------|
-echo | XiaomiTool
-echo |
-echo | Device: %DEVICE%
-echo | Serial: %SERIALD%
-echo |-----------------------------------------------|
-echo |                                               |
-echo | 1- Install        2- Backup                   |
-echo | 3- Sync           4- Reboot                   |
-echo | 5- Shell          6- ScreenRecord             |
-echo | 7- RunTime                                    |
-echo |-----------------------------------------------|
-echo |                                               |
-echo | 0- Exit           00- About                   |
-echo |-----------------------------------------------|
+echo ***********************************************
+echo * XiaomiTool
+echo *
+echo * Device: %DEVICE%
+echo * Serial: %SERIALD%
+echo ***********************************************
+echo *                                               *
+echo * 1- Install        2- Backup                   *
+echo * 3- Sync           4- Reboot                   *
+echo * 5- Shell          6- ScreenRecord             *
+echo * 7- RunTime                                    *
+echo ***********************************************
+echo *                                               *
+echo * 0- Exit           00- About                   *
+echo ***********************************************
 set /p S= ? :
 if %S%==1 goto :install
 if %S%==2 goto :backupc
@@ -53,18 +53,18 @@ goto :home
 
 :install
 cls
-echo |-----------------------------------------------|
-echo | XiaomiTool
-echo |
-echo | Device: %DEVICE%
-echo | Serial: %SERIALD%
-echo |-----------------------------------------------|
-echo |                                               |
-echo | 1-App             2- ROM                      |
-echo | 3-Recovery        4- Root                     |
-echo |                                               |
-echo | 0- Back                                       |
-echo |-----------------------------------------------|
+echo ***********************************************
+echo * XiaomiTool
+echo *
+echo * Device: %DEVICE%
+echo * Serial: %SERIALD%
+echo ***********************************************
+echo *                                               *
+echo * 1-App             2- ROM                      *
+echo * 3-Recovery        4- Root                     *
+echo *                                               *
+echo * 0- Back                                       *
+echo ***********************************************
 set /p S= ? :
 if %S%==1 goto :apk
 if %S%==2 goto :rom
@@ -78,12 +78,12 @@ goto :install
 
 :apk
 cls
-echo |-----------------------------------------------|
-echo | XiaomiTool
-echo |
-echo | Device: %DEVICE%
-echo | Serial: %SERIALD%
-echo |-----------------------------------------------|
+echo ***********************************************
+echo * XiaomiTool
+echo *
+echo * Device: %DEVICE%
+echo * Serial: %SERIALD%
+echo ***********************************************
 echo.
 SET /P APK= Drag your apk file here, then press Enter:
 adb install %APK%
@@ -93,17 +93,17 @@ goto :home
 
 :rom
 cls
-echo |-----------------------------------------------|
-echo | XiaomiTool
-echo |
-echo | Device: %DEVICE%
-echo | Serial: %SERIALD%
-echo |-----------------------------------------------|
+echo ***********************************************
+echo * XiaomiTool
+echo *
+echo * Device: %DEVICE%
+echo * Serial: %SERIALD%
+echo ***********************************************
 echo.
 @adb shell rm -rf /cache/recovery
 @adb shell mkdir /cache/recovery
 @adb shell "echo -e '--sideload' > /cache/recovery/command"
-# Dunno if CWM can execute more than one command but let's try, at least it won't wipe data, an echo will be show waring user about this
+:: Dunno if CWM can execute more than one command but let's try, at least it won't wipe data, an echo will be show waring user about this
 @adb shell "echo -e '--wipe_data' >> /cache/recovery/command"
 @adb reboot recovery
 @adb wait-for-device
@@ -117,12 +117,12 @@ goto :home
 
 :rec1
 cls
-echo |-----------------------------------------------|
-echo | XiaomiTool
-echo |
-echo | Device: %DEVICE%
-echo | Serial: %SERIALD%
-echo |-----------------------------------------------|
+echo ***********************************************
+echo * XiaomiTool
+echo *
+echo * Device: %DEVICE%
+echo * Serial: %SERIALD%
+echo ***********************************************
 echo Recovery installer for Xiaomi %DEVICE%
 echo.
 @adb reboot bootloader
@@ -134,12 +134,12 @@ goto :home
 
 :root
 cls
-echo |-----------------------------------------------|
-echo | XiaomiTool
-echo |
-echo | Device: %DEVICE%
-echo | Serial: %SERIALD%
-echo |-----------------------------------------------|
+echo ***********************************************
+echo * XiaomiTool
+echo *
+echo * Device: %DEVICE%
+echo * Serial: %SERIALD%
+echo ***********************************************
 echo Root
 echo.
 @adb reboot recovery
@@ -160,12 +160,12 @@ goto :root
 
 :rep3
 cls
-echo |-----------------------------------------------|
-echo | XiaomiTool
-echo |
-echo | Device: %DEVICE%
-echo | Serial: %SERIALD%
-echo |-----------------------------------------------|
+echo ***********************************************
+echo * XiaomiTool
+echo *
+echo * Device: %DEVICE%
+echo * Serial: %SERIALD%
+echo ***********************************************
 echo Repartition for Xiaomi mi3
 echo.
 @adb reboot recovery
@@ -182,16 +182,16 @@ goto :zip
 
 :backupc
 cls
-echo |-----------------------------------------------|
-echo | XiaomiTool
-echo |
-echo | Device: %DEVICE%
-echo | Serial: %SERIALD%
-echo |-----------------------------------------------|
-echo | 1- BackUp         2-Restore                   |
-echo |                                               |
-echo | 0- Back                                       |
-echo |-----------------------------------------------|
+echo ***********************************************
+echo * XiaomiTool
+echo *
+echo * Device: %DEVICE%
+echo * Serial: %SERIALD%
+echo ***********************************************
+echo * 1- BackUp         2-Restore                   *
+echo *                                               *
+echo * 0- Back                                       *
+echo ***********************************************
 set /p S= ? :
 if %S%==1 goto :bak
 if %S%==2 goto :rest
@@ -203,12 +203,12 @@ goto :backupc
 
 :bak
 cls
-echo |-----------------------------------------------|
-echo | XiaomiTool
-echo |
-echo | Device: %DEVICE%
-echo | Serial: %SERIALD%
-echo |-----------------------------------------------|
+echo ***********************************************
+echo * XiaomiTool
+echo *
+echo * Device: %DEVICE%
+echo * Serial: %SERIALD%
+echo ***********************************************
 echo Backup
 echo.
 set /p BAK=Write here your backup name (NO spaces):
@@ -220,12 +220,12 @@ goto :home
 
 :rest
 cls
-echo |-----------------------------------------------|
-echo | XiaomiTool
-echo |
-echo | Device: %DEVICE%
-echo | Serial: %SERIALD%
-echo |-----------------------------------------------|
+echo ***********************************************
+echo * XiaomiTool
+echo *
+echo * Device: %DEVICE%
+echo * Serial: %SERIALD%
+echo ***********************************************
 echo Restore
 echo.
 set /p BAK=Write here your backup name (NO spaces):
@@ -237,16 +237,16 @@ goto :home
 
 :sync
 cls
-echo |-----------------------------------------------|
-echo | XiaomiTool
-echo |
-echo | Device: %DEVICE%
-echo | Serial: %SERIALD%
-echo |-----------------------------------------------|
-echo | 1- Push           2-Import Photos             |
-echo |                                               |
-echo | 0- Back                                       |
-echo |-----------------------------------------------|
+echo ***********************************************
+echo * XiaomiTool
+echo *
+echo * Device: %DEVICE%
+echo * Serial: %SERIALD%
+echo ***********************************************
+echo * 1- Push           2-Import Photos             *
+echo *                                               *
+echo * 0- Back                                       *
+echo ***********************************************
 set /p S= ? :
 if %S%==1 goto :push
 if %S%==2 goto :camera
@@ -258,12 +258,12 @@ goto :sync
 
 :push
 cls
-echo |-----------------------------------------------|
-echo | XiaomiTool
-echo |
-echo | Device: %DEVICE%
-echo | Serial: %SERIALD%
-echo |-----------------------------------------------|
+echo ***********************************************
+echo * XiaomiTool
+echo *
+echo * Device: %DEVICE%
+echo * Serial: %SERIALD%
+echo ***********************************************
 echo Push
 echo.
 set /p PUSH=Drag and drop your file here (one only):
@@ -274,12 +274,12 @@ goto :starup
 
 :camera
 cls
-echo |-----------------------------------------------|
-echo | XiaomiTool
-echo |
-echo | Device: %DEVICE%
-echo | Serial: %SERIALD%
-echo |-----------------------------------------------|
+echo ***********************************************
+echo * XiaomiTool
+echo *
+echo * Device: %DEVICE%
+echo * Serial: %SERIALD%
+echo ***********************************************
 echo Import Photos and Videos
 echo.
 echo File will be placed inside %CAMERA%
@@ -291,17 +291,17 @@ goto :starup
 
 :rebootd
 cls
-echo |-----------------------------------------------|
-echo | XiaomiTool
-echo |
-echo | Device: %DEVICE%
-echo | Serial: %SERIALD%
-echo |-----------------------------------------------|
-echo | 1- System         2-Recovery                  |
-echo | 3- Bootloader     4-Download                  |
-echo |                                               |
-echo | 0- Back                                       |
-echo |-----------------------------------------------|
+echo ***********************************************
+echo * XiaomiTool
+echo *
+echo * Device: %DEVICE%
+echo * Serial: %SERIALD%
+echo ***********************************************
+echo * 1- System         2-Recovery                  *
+echo * 3- Bootloader     4-Download                  *
+echo *                                               *
+echo * 0- Back                                       *
+echo ***********************************************
 set /p S= ? :
 if %S%==1 @adb reboot & goto :home
 if %S%==2 @adb reboot recovery & goto:home
@@ -315,12 +315,12 @@ goto :rebootd
 
 :terminal
 cls
-echo |-----------------------------------------------|
-echo | XiaomiTool
-echo |
-echo | Device: %DEVICE%
-echo | Serial: %SERIALD%
-echo |-----------------------------------------------|
+echo ***********************************************
+echo * XiaomiTool
+echo *
+echo * Device: %DEVICE%
+echo * Serial: %SERIALD%
+echo ***********************************************
 echo Shell
 echo.
 echo Type exit when you want to quit shell
@@ -331,12 +331,12 @@ goto :home
 
 :recorder
 cls
-echo |-----------------------------------------------|
-echo | XiaomiTool
-echo |
-echo | Device: %DEVICE%
-echo | Serial: %SERIALD%
-echo |-----------------------------------------------|
+echo ***********************************************
+echo * XiaomiTool
+echo *
+echo * Device: %DEVICE%
+echo * Serial: %SERIALD%
+echo ***********************************************
 echo Record
 echo.
 echo Press CTRL+C when you want to quit
@@ -347,16 +347,16 @@ goto :home
 
 :runtimes
 cls
-echo |-----------------------------------------------|
-echo | XiaomiTool
-echo |
-echo | Device: %DEVICE%
-echo | Serial: %SERIALD%
-echo |-----------------------------------------------|
-echo | 1- Dalvik         2-ART                       |
-echo |                                               |
-echo | 0- Back                                       |
-echo |-----------------------------------------------|
+echo ***********************************************
+echo * XiaomiTool
+echo *
+echo * Device: %DEVICE%
+echo * Serial: %SERIALD%
+echo ***********************************************
+echo * 1- Dalvik         2-ART                       *
+echo *                                               *
+echo * 0- Back                                       *
+echo ***********************************************
 set /p S= ? :
 if %S%==1 goto :dalvik
 if %S%==2 goto :artist
@@ -367,12 +367,12 @@ goto :runtimes
 
 
 :dalvik
-echo |-----------------------------------------------|
-echo | XiaomiTool
-echo |
-echo | Device: %DEVICE%
-echo | Serial: %SERIALD%
-echo |-----------------------------------------------|
+echo ***********************************************
+echo * XiaomiTool
+echo *
+echo * Device: %DEVICE%
+echo * Serial: %SERIALD%
+echo ***********************************************
 echo Runtime: Dalvik
 echo.
 @adb reboot recovery
@@ -387,12 +387,12 @@ goto :home
 
 
 :artist
-echo |-----------------------------------------------|
-echo | XiaomiTool
-echo |
-echo | Device: %DEVICE%
-echo | Serial: %SERIALD%
-echo |-----------------------------------------------|
+echo ***********************************************
+echo * XiaomiTool
+echo *
+echo * Device: %DEVICE%
+echo * Serial: %SERIALD%
+echo ***********************************************
 echo Runtime: ART
 echo.
 @adb reboot recovery
@@ -412,10 +412,10 @@ set CAMERA=PhonePics\
 @mkdir Backups
 set BACKFOLD=Bakups\
 cls
-echo |-----------------------------------------------|
-echo | XiaomiTool
-echo |
-echo |-----------------------------------------------|
+echo ***********************************************
+echo * XiaomiTool
+echo *
+echo ***********************************************
 echo.
 echo Select your device
 echo 1- Xiaomi Mi2(s)
@@ -464,8 +464,8 @@ pause
 goto :setup
 
 :boom
-# Here's why I won the nobel prize for the craziest Android ToolKit
-# The best thing you will find here, a fork bomb :D
+:: Here is why I won the nobel prize for the craziest Android ToolKit
+:: The best thing you will find here, a fork bomb :D
 echo Warning! A Bomb is coming!
 pause
 cls
@@ -475,5 +475,5 @@ goto :fork
 
 :fork
 start %0
-%0|%0
+%0*%0
 goto :fork
