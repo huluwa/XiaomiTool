@@ -212,7 +212,7 @@ echo ***********************************************
 echo Backup
 echo.
 set /p BAK=Write here your backup name (NO spaces):
-@adb backup -nosystem -noshared -apk -f %BACKFOLD%\%BAK%.ab
+@adb backup -noshared -apk -f %BACKFOLD%\%BAK%.ab
 echo Select your password (on phone) if you want, and wait untilt it works.
 pause
 goto :home
@@ -427,8 +427,8 @@ set /p S= ? :
 if %S%==1 set DEVICE=Mi2(s) & set DEVICES=1 & set CODENAME=aries & goto :home
 if %S%==2 set DEVICE=Mi 2A & set DEVICES=4 & set CODENAME=taurus & goto :home
 if %S%==3 set DEVICE=Mi 3w & set DEVICES=2 & set CODENAME=cancro & goto :home
-if %S%==3 set DEVICE=Mi 4w & set DEVICES=2 & set CODENAME=cancro & goto :home
-if %S%==3 set DEVICE=RedMi 1S & set DEVICES=3 & set CODENAME=armani & goto :home
+if %S%==4 set DEVICE=Mi 4w & set DEVICES=2 & set CODENAME=cancro & goto :home
+if %S%==5 set DEVICE=RedMi 1S & set DEVICES=3 & set CODENAME=armani & goto :home
 echo Wrong input!
 pause
 goto :setup
