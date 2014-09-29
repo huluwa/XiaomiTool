@@ -51,13 +51,14 @@ home () {
   echo "| 3- Shell                 4- Install an app    |"
     if [ "$mix" = 1 ]; then
         echo "| 5- Install a recovery    6- Install a Rom     |"
+        echo "| 7- Flash a zip           8- Root              |"
+
     fi
-    echo "| 5- Install a recovery    7- Flash a zip       |"
     if [ "$androidv" = "kk" ]; then
-        echo "| 8- Root                  9- Record the screen |"
-        echo "| 10- Switch to Dalvik     11- Switch to ART    |"
+        echo "| 9- Wipe menu             10- Record screen    |"
+        echo "| 11- Switch to Dalvik     12- Switch to ART    |"
     fi
-    echo "| 12- Advanced                                  |"
+    echo "| 13- Device Info                                   |"
     echo "|-----------------------------------------------|"
     echo "|                                               |"
     echo "| 0- Exit         00-About                      |"
@@ -79,12 +80,16 @@ home () {
       zip
     elif [ "$CHOICE" == 8 ]; then
       root
-    elif [ "$CHOICE" == 10 ]; then
-        bdedalvik
-    elif [ "$CHOICE" == 11 ]; then
-      beart
     elif [ "$CHOICE" == 9 ]; then
-      recorder
+      wipec
+    elif [ "$CHOICE" == 10 ]; then
+        recorder
+    elif [ "$CHOICE" == 11 ]; then
+        bdedalvik
+    elif [ "$CHOICE" == 12 ]; then
+      beart
+    elif [ "$CHOICE" == 13 ]; then
+        deviceinfo
     elif  [ "$CHOICE" == 0 ]; then
       close
     elif  [ "$CHOICE" == 00 ]; then
@@ -110,8 +115,8 @@ home () {
 
 close () {
   adb kill-server
-  killall adb
-  killall fastboot
+  killall -9 adb
+  killall -9 fastboot
   clear
   exit 1
   }
@@ -148,8 +153,6 @@ rom () {
   adb shell  rm -rf /cache/recovery
   adb shell mkdir /cache/recovery
   adb shell "echo -e '--sideload' > /cache/recovery/command"
-  # Dunno if CWM can execute more than one command but let's try, at least it won't wipe data, an echo will be show waring user about this
-  adb shell "echo -e '--wipe_data' >> /cache/recovery/command"
   adb reboot recovery
   isavailable
   read -p "Drag your zip here and press ENTER: " ROM
@@ -169,6 +172,7 @@ zip () {
   echo "Zip flasher"
   echo " "
   adb reboot recovery
+  isavaible
   adb shell rm -rf /cache/recovery
   adb shell mkdir /cache/recovery
   adb shell "echo -e '--sideload' > /cache/recovery/command"
@@ -194,6 +198,8 @@ root () {
   elif [[ "$CHOICE" == "n" ]]; then
     ROOTZIP=$ROOTAOSP
   fi
+  adb reboot recovery
+  isavailable
   adb shell rm -rf /cache/recovery
   adb shell mkdir /cache/recovery
   adb shell "echo -e '--sideload' > /cache/recovery/command"
@@ -342,12 +348,84 @@ recorder () {
   NAME=$(date "+%N")
   adb shell screenrecord /sdcard/Movies/$NAME.mp4
   echo "Done! You'll find the file on your phone"
+  sleep 3
   home
   }
 
+# <- Wipes ->
+
+wipec () {
+  headerprint
+  echo "|-----------------------------------------------|"
+  echo "| 1- Wipe Cache + Dalvik   2-Wipe Data                |"
+  echo "|                                               |"
+  echo "| 0- Back                                             |"
+  echo "|-----------------------------------------------|"
+  read -p "? " CHOICE
+  if [ "$CHOICE" == 1 ]; then
+    wipecache
+  elif [ "$CHOICE" == 2 ]; then
+    wipedata
+  elif [ "$CHOICE" == 0 ]; then
+    home
+  else
+    echo "Wrong input, retry!"
+    sleep 2
+    wipec
+  fi
+}
+
+wipecache () {
+  headerprint
+  echo "Wipe Cache"
+  adb reboot recovery
+  isavailable
+  adb shell rm -rf /cache/recovery
+  adb shell mkdir /cache/recovery
+  adb shell "echo -e '--sideload' > /cache/recovery/command"
+  adb sideload "res/cache.zip"
+  echo "Done!"
+  adb reboot
+  sleep 3
+  home
+}
+
+wipedata () {
+  headerprint
+  echo "Wipe Cache"
+  adb reboot recovery
+  isavailable
+  adb shell rm -rf /cache/recovery
+  adb shell mkdir /cache/recovery
+  adb shell "echo -e '--wipe_data' > /cache/recovery/command"
+  ab reboot recovery
+  echo "Done!"
+  echo "The device will wipe data automatically, it may reboot at the end,"
+  echo "if it stucks on a blank screen, reboot it by pressing power button."
+  sleep 5
+  home
+}
+
 # <- Other stuffs ->
 
-disclaimer() {
+deviceinfo () {
+  headerprint
+  echo "| Device: $DID"
+  echo "| Android: $(adb shell getprop ro.build.version.release)"
+  echo "| OEM: $(adb shell getprop ro.product.brand)"
+  echo "| Name: $(adb shell getprop ro.product.device)"
+  echo "| SOC: $(adb shell getprop ro.board.platform)"
+  echo "| Build: $(adb shell getprop ro.build.display.id)"
+  echo "| Serial: $SERIAL"
+  echo "| Status: $STATUS"
+  echo "| Location: $USBADB"
+  read -p "Press Enter to quit"
+  home
+}
+
+
+
+disclaimer () {
   clear
   echo " ##########################################"
   echo " # XiaomiTool ~~ Disclaimer               #"
@@ -381,11 +459,7 @@ about () {
   }
 
 isavailable () {
-  if [[ "$STATUS" == device ]]; then
-    echo " "
-  else
-    isavailable
-  fi
+  adb wait-for-device
 }
 
 # <- Setup ->
@@ -395,9 +469,11 @@ detect_device() {
     adb start-server
     clear
     echo "Waiting for device ...."
+    isavailable
     DEVICE=$(adb shell getprop ro.product.device)
     DID=$(adb shell getprop ro.product.model)
     BUILD=$(adb shell getprop ro.build.version.release)
+    OEM=$(adb shell getprop ro.product.brand)
     if [[ "$DEVICE" == aries* ]]; then
         mix=1
         DDIR=$Mi2
@@ -418,6 +494,10 @@ detect_device() {
       adba=1
      DDIR=$MI2A
      setup
+   elif [[ "$OEM" == xiaomi ]]; then
+     echo "Xiaomi device detected, running "
+     adba=2
+     DID="Xiaomi Device"
     else
         echo "Device not supported: $DEVICE"
         sleep 2
