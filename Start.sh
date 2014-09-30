@@ -352,6 +352,31 @@ recorder () {
   home
   }
 
+# < - Recover it! ->
+
+firefighters () {
+  headerprint
+  echo "Firefighter Mode!"
+  echo " "
+  echo "To recover your phone you need to get into fastboot mode"
+  echo "Boot your phone with Vol- and Power Key"
+  echo "Once you see the bootloader Logo, attach the phone here."
+  read -p "Press Enter to continue."
+  clear
+  headerprint
+  echo "Firefighter Mode!"
+  echo " "
+  read -p "Drag here the .tar file that contains the fastboot files" FBPACK
+  rm -rf $DDIR/fbpack && mkdir $DDIR/fbpack
+  cp $FBPACK $DDIR/fbpack/pack.tar
+  tar -xf $DDIR/fbpack/pack.tar
+  echo "Firefigher is recoverying your phone..."
+  sh $DDIR/fbpack/wipe-all.sh
+  echo "Done!"
+  read -p "Press Enter to quit."
+  home
+}
+
 # <- Wipes ->
 
 wipec () {

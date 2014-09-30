@@ -1,0 +1,11 @@
+set_progress(0.1);
+run_program("/sbin/busybox", "mount", "/data");
+delete_recursive("/data/dalvik-cache/");
+delete_recursive("/cache/dalvik-cache/");
+delete_recursive("/cache");
+delete_recursive("/data/tombstones");
+delete("/data/system/batterystats.bin");
+delete_recursive("/sdcard/Android/data/com.miui.gallery");
+set_progress(1.0);
+unmount("/data");
+unmount("/system");
