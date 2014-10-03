@@ -1,18 +1,21 @@
 @echo off
 
-::   Copyright 2014 Joey Rizzoli
+:: XiaomiTool, an OpenSource Toolkit for Xiaomi devices.
+:: Copyright (C) 2014 Joey Rizzoli
 ::
-::   Licensed under the Apache License, Version 2.0 (the "License");
-::   you may not use this file except in compliance with the License.
-::   You may obtain a copy of the License at
+:: This program is free software; you can redistribute it and/or
+:: modify it under the terms of the GNU General Public License
+:: as published by the Free Software Foundation; either version 2
+:: of the License, or (at your option) any later version.
 ::
-::       http://www.apache.org/licenses/LICENSE-2.0
+:: This program is distributed in the hope that it will be useful,
+:: but WITHOUT ANY WARRANTY; without even the implied warranty of
+:: MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+:: GNU General Public License for more details.
 ::
-::   Unless required by applicable law or agreed to in writing, software
-::   distributed under the License is distributed on an "AS IS" BASIS,
-::   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-::   See the License for the specific language governing permissions and
-::   limitations under the License.
+:: You should have received a copy of the GNU General Public License
+:: along with this program; if not, write to the Free Software
+:: Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 
 cls
 goto :disclaimer
@@ -127,7 +130,15 @@ echo Recovery installer for Xiaomi %DEVICE%
 echo.
 @adb reboot bootloader
 @fastboot devices
-@fastboot flash recovery %CODENAME%\Recovery\recovery.img
+if %DEVICES%==1 fastboot flash recovery Aries\Recovery\recovery.img & goto :rec2
+if %DEVICES%==2 fastboot flash recovery cancro\Recovery\recovery.img & goto :rec2
+if %DEVICES%==3 fastboot flash recovery taurus\Recovery\recovery.img & goto :rec2
+if %DEVICES%==4 fastboot flash recovery armani\Recovery\recovery.img & goto :rec2
+echo There was a problem while detecting your device!
+pause
+goto :home
+
+:rec2
 echo Done!
 @fastboot reboot
 goto :home
@@ -166,17 +177,19 @@ echo *
 echo * Device: %DEVICE%
 echo * Serial: %SERIALD%
 echo ***********************************************
-echo Repartition for Xiaomi mi3
+echo Check If Fake
 echo.
 @adb reboot recovery
 @adb wait-for-device
 pause
-@adb pull Cancro\Repartition.sh /tmp/
-@adb shell chmod 0777 /tmp/repartition.sh
-@adb shell sh /tmp/repartition.sh
-echo Now you MUST install a rom. Sideload it as a Zip file
+@adb pull res\fake.sh /tmp/fake.sh
+@adb shell chmod 0777 /tmp/fake.sh
+@adb shell sh /tmp/fake.sh
+@adb pull /tmp/outfake.txt res/outfake.txt
+set /p RESULT=<res/outfake.txt
+echo %RESULT%
+@adb reboot
 pause
-goto :zip
 
 
 
@@ -211,6 +224,7 @@ echo * Serial: %SERIALD%
 echo ***********************************************
 echo Backup
 echo.
+echo Android 4.4.x KitKat have a bug with adb backup, if you are running it backup will fail
 set /p BAK=Write here your backup name (NO spaces):
 @adb backup -noshared -apk -f %BACKFOLD%\%BAK%.ab
 echo Select your password (on phone) if you want, and wait untilt it works.
@@ -228,6 +242,7 @@ echo * Serial: %SERIALD%
 echo ***********************************************
 echo Restore
 echo.
+echo Android 4.4.x KitKat have a bug with adb backup, if you are running it backup will fail
 set /p BAK=Write here your backup name (NO spaces):
 @adb restore %BACKFOLD%\%BAK%.ab
 echo Type your password (on phone), and wait untilt it works.
