@@ -1,18 +1,21 @@
 #!/bin/bash
 
-#   Copyright 2014 Joey Rizzoli
+# XiaomiTool, an OpenSource Toolkit for Xiaomi devices.
+# Copyright (C) 2014 Joey Rizzoli
 #
-#   Licensed under the Apache License, Version 2.0 (the "License");
-#   you may not use this file except in compliance with the License.
-#   You may obtain a copy of the License at
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
 #
-#       http://www.apache.org/licenses/LICENSE-2.0
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#   Unless required by applicable law or agreed to in writing, software
-#   distributed under the License is distributed on an "AS IS" BASIS,
-#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#   See the License for the specific language governing permissions and
-#   limitations under the License.
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 
 #      */*****   Home    *****\*
 
@@ -47,48 +50,56 @@ headerprint () {
 home () {
   headerprint
   echo "|                                               |"
-  echo "| 1- Manage backups        2- Sync              |"
-  echo "| 3- Shell                 4- Install an app    |"
+  echo "| 10- Manage backups      11- Sync              |"
+  echo "| 12- Shell               13- Install an app    |"
     if [ "$mix" = 1 ]; then
-        echo "| 5- Install a recovery    6- Install a Rom     |"
-        echo "| 7- Flash a zip           8- Root              |"
-
+        echo "| 20- Install a recovery  21- Install a Rom     |"
+        echo "| 22- Flash a zip         23- Root              |"
+        echo "| 24- Boot                25- Unbrick           |"
     fi
     if [ "$androidv" = "kk" ]; then
-        echo "| 9- Wipe menu             10- Record screen    |"
-        echo "| 11- Switch to Dalvik     12- Switch to ART    |"
+        echo "| 30- Wipe menu           31- Record screen     |"
+        echo "| 32- Switch to Dalvik    33- Switch to ART     |"
     fi
-    echo "| 13- Device Info                                   |"
+    echo "| 99- Device Info                               |"
     echo "|-----------------------------------------------|"
     echo "|                                               |"
     echo "| 0- Exit         00-About                      |"
     echo "|-----------------------------------------------|"
     read -p "? " CHOICE
-    if [ "$CHOICE" == 1 ]; then
+    if [ "$CHOICE" == 10 ]; then
       back1
-    elif [ "$CHOICE" == 2 ]; then
-      pnp
-    elif  [ "$CHOICE" = 3 ]; then
-      shelll
-    elif  [ "$CHOICE" == 4 ]; then
-      apk
-    elif  [ "$CHOICE" == 5 ]; then
-      recovery
-    elif  [ "$CHOICE" == 6 ]; then
-      rom
-    elif  [ "$CHOICE" == 7 ]; then
-      zip
-    elif [ "$CHOICE" == 8 ]; then
-      root
-    elif [ "$CHOICE" == 9 ]; then
-      wipec
-    elif [ "$CHOICE" == 10 ]; then
-        recorder
     elif [ "$CHOICE" == 11 ]; then
+      pnp
+    elif  [ "$CHOICE" = 12 ]; then
+      shelll
+    elif  [ "$CHOICE" == 13 ]; then
+      apk
+    elif  [ "$CHOICE" == 20 ]; then
+      recovery
+    elif  [ "$CHOICE" == 21 ]; then
+      rom
+    elif  [ "$CHOICE" == 22 ]; then
+      zip
+    elif [ "$CHOICE" == 23 ]; then
+      root
+    elif [ "$CHOICE" == 24 ]; then
+      fbboot
+    elif [ "$CHOICE" == 25 ]; then
+      echo " "
+      echo "This features is not stable, to prevent damages you cannot use it."
+      echo "Check for updates to see if it has been fixed"
+      read -p "Press Enter to go back"
+#      firefighters
+    elif [ "$CHOICE" == 30 ]; then
+      wipec
+    elif [ "$CHOICE" == 31 ]; then
+        recorder
+    elif [ "$CHOICE" == 32 ]; then
         bdedalvik
-    elif [ "$CHOICE" == 12 ]; then
+    elif [ "$CHOICE" == 33 ]; then
       beart
-    elif [ "$CHOICE" == 13 ]; then
+    elif [ "$CHOICE" == 99 ]; then
         deviceinfo
     elif  [ "$CHOICE" == 0 ]; then
       close
@@ -129,7 +140,7 @@ apk () {
   echo " "
   read -p "Drag your apk here and press ENTER: " APK
   adb install $APK
-  sleep 2
+  read -p "Done! Press Enter to quit."
   home
   }
 
@@ -138,10 +149,10 @@ recovery () {
   echo "Recovery installer"
   adb reboot bootloader
   echo "Flashing recovery on your $DID"
+  wait_for_fastboot
   fastboot flash $DDIR/recovery/recovery.img
   fastboot reboot
-  echo " "
-  echo "Done!"
+  read -p "Done! Press Enter to quit."
   sleep 3
   }
 
@@ -154,16 +165,15 @@ rom () {
   adb shell mkdir /cache/recovery
   adb shell "echo -e '--sideload' > /cache/recovery/command"
   adb reboot recovery
-  isavailable
+  wait_for_adb recovery
   read -p "Drag your zip here and press ENTER: " ROM
-  sleep 180 # < Wait until it wipes data
   adb sideload $ROM
   echo "Now wait until your phone install rom, about 4 minutes"
   sleep 240
   echo "Warning: if your device bootloops, boot into recovery and wipe data!"
   read -p "If your phone screen is blank with recovery background, press enter or wait (it may reboot automatically, depends on the rom you flashed)"
   adb reboot
-  echo "Done!"
+  read -p "Done! Press Enter to quit."
   home
   }
 
@@ -172,18 +182,18 @@ zip () {
   echo "Zip flasher"
   echo " "
   adb reboot recovery
-  isavaible
+  wait_for_adb recovery
   adb shell rm -rf /cache/recovery
   adb shell mkdir /cache/recovery
   adb shell "echo -e '--sideload' > /cache/recovery/command"
   adb reboot recovery
-  isavailable
+  wait_for_adb recovery
   read -p "Drag your zip here and press ENTER: " ZIP
   adb sideload $ZIP
   echo "Now wait until your phone install zip file.."
   read -p "Only when your phone screen is blank with recovery background, press enter"
   adb reboot
-  echo "Done!"
+  read -p "Done! Press Enter to quit."
   home
   }
 
@@ -199,7 +209,7 @@ root () {
     ROOTZIP=$ROOTAOSP
   fi
   adb reboot recovery
-  isavailable
+  wait_for_adb recovery
   adb shell rm -rf /cache/recovery
   adb shell mkdir /cache/recovery
   adb shell "echo -e '--sideload' > /cache/recovery/command"
@@ -207,7 +217,7 @@ root () {
   adb wait-for-device
   adb sideload $ROOTZIP
   echo "Now wait until your phone install zip file. It will reboot automatically one it's done."
-  echo "Done!"
+  read -p "Done! Press Enter to quit."
   home
 }
 
@@ -224,15 +234,27 @@ shelll () {
   home
   }
 
+fbboot () {
+  headerprint
+  echo "Fastboot Booter"
+  echo " "
+  echo "This will help you testing kernels and or other sideloadable images"
+  read -p "Drag here the boot.img: " BOOTIMG
+  adb reboot bootloader
+  wait_for_fastboot
+  fastboot boot $BOOTIMG
+  read -p "Done! Press Enter to quit."
+  }
+
 # <- Backup ->
 
 back1 () {
   headerprint
-  echo "Backup Manager"
-  echo " "
-  echo "1- Backup    2-Restore"
-  echo " "
-  echo "0- Go Back"
+  echo "|-----------------------------------------------|"
+  echo "| 1-Backup                   2-Restore          |"
+  echo "|                                               |"
+  echo "| 0- Back                                       |"
+  echo "|-----------------------------------------------|"
   read -p "?" CHOICE
     if [ "$CHOICE" = "1" ]; then
         backup
@@ -252,9 +274,10 @@ backup () {
   echo " "
   read -p "Type backup name (NO SPACES): " BACKUPID
   echo " "
+  echo "Android 4.4.x KitKat have a bug with adb backup, if you're running it backup will fail"
   echo "Enter password on your phone and let it work"
   adb backup -nosystem -noshared -apk -f $BACKFOLDER/$BACKUPID.ab
-  read -p "Done! Press Enter"
+  read -p "Done! Press Enter to quit."
   home
   }
 
@@ -266,7 +289,7 @@ restore () {
   echo " "
   echo "On your phone, type password and let it works"
   adb restore $BACKFOLDER/$BACKUPID.ab
-  read -p "Done! Press Enter"
+  read -p "Done! Press Enter to quit."
   home
   }
 
@@ -274,12 +297,11 @@ restore () {
 
 pnp () {
   headerprint
-  echo "Push and Pull"
-  echo " "
-  echo "1- Push a file "
-  echo "2- Import Camera Photos"
-  echo " "
-  echo "0- Go Back"
+  echo "|-----------------------------------------------|"
+  echo "| 1-Push a file            2- Import Camera     |"
+  echo "|                                               |"
+  echo "| 0- Back                                       |"
+  echo "|-----------------------------------------------|"
   read -p "?" CHOICE
     if [ "$CHOICE" = "1" ]; then
         push
@@ -300,7 +322,7 @@ push () {
   echo " "
   read -p "Drag your file here (one): " FILE
   adb push $FILE /sdcard
-  read -p "Press ENTER"
+  read -p "Done! Press Enter to quit."
   home
   }
 
@@ -310,7 +332,7 @@ camera () {
   echo " "
   read -p "Press enter to start"
   adb pull $CAMDIR Camera
-  read -p "Press ENTER"
+  read -p "Done! Press Enter to quit."
   home
   }
 
@@ -324,7 +346,7 @@ beart () {
   adb shell rm -rf /data/dalvik-cache
   adb shell 'echo -n libart.so > /data/property/persist.sys.dalvik.vm.lib'
   adb reboot
-  echo "Done!"
+  read -p "Done! Press Enter to quit."
   home
 }
 
@@ -336,7 +358,7 @@ bedalvik () {
   adb shell rm -rf /data/dalvik-cache
   adb shell 'echo -n libdalvik.so > /data/property/persist.sys.dalvik.vm.lib'
   adb reboot
-  echo "Done!"
+  read -p "Done! Press Enter to quit."
   home
   }
 
@@ -348,7 +370,7 @@ recorder () {
   NAME=$(date "+%N")
   adb shell screenrecord /sdcard/Movies/$NAME.mp4
   echo "Done! You'll find the file on your phone"
-  sleep 3
+  read -p "Done! Press Enter to quit."
   home
   }
 
@@ -371,9 +393,9 @@ firefighters () {
   cp $FBPACK $DDIR/fbpack/pack.tar
   tar -xf $DDIR/fbpack/pack.tar
   echo "Firefigher is recoverying your phone..."
-  sh $DDIR/fbpack/wipe-all.sh
-  echo "Done!"
-  read -p "Press Enter to quit."
+  wait_for_fastboot
+  sh $DDIR/fbpack/flash_all_wipe.sh
+  read -p "Done! Press Enter to quit."
   home
 }
 
@@ -384,7 +406,7 @@ wipec () {
   echo "|-----------------------------------------------|"
   echo "| 1- Wipe Cache + Dalvik   2-Wipe Data                |"
   echo "|                                               |"
-  echo "| 0- Back                                             |"
+  echo "| 0- Back                                       |"
   echo "|-----------------------------------------------|"
   read -p "? " CHOICE
   if [ "$CHOICE" == 1 ]; then
@@ -404,14 +426,14 @@ wipecache () {
   headerprint
   echo "Wipe Cache"
   adb reboot recovery
-  isavailable
+  wait_for_adb recovery
   adb shell rm -rf /cache/recovery
   adb shell mkdir /cache/recovery
   adb shell "echo -e '--sideload' > /cache/recovery/command"
+  adb reboot recovery
   adb sideload "res/cache.zip"
-  echo "Done!"
-  adb reboot
-  sleep 3
+  echo "Wait until it works..."
+  read -p "Done! Press Enter to quit."
   home
 }
 
@@ -419,15 +441,14 @@ wipedata () {
   headerprint
   echo "Wipe Cache"
   adb reboot recovery
-  isavailable
+  wait_for_adb recovery
   adb shell rm -rf /cache/recovery
   adb shell mkdir /cache/recovery
   adb shell "echo -e '--wipe_data' > /cache/recovery/command"
-  ab reboot recovery
-  echo "Done!"
+  adb reboot recovery
   echo "The device will wipe data automatically, it may reboot at the end,"
   echo "if it stucks on a blank screen, reboot it by pressing power button."
-  sleep 5
+  read -p "Done! Press Enter to quit."
   home
 }
 
@@ -436,19 +457,63 @@ wipedata () {
 deviceinfo () {
   headerprint
   echo "| Device: $DID"
-  echo "| Android: $(adb shell getprop ro.build.version.release)"
   echo "| OEM: $(adb shell getprop ro.product.brand)"
   echo "| Name: $(adb shell getprop ro.product.device)"
-  echo "| SOC: $(adb shell getprop ro.board.platform)"
-  echo "| Build: $(adb shell getprop ro.build.display.id)"
+  echo  "| SOC: $(adb shell getprop ro.board.platform)"
   echo "| Serial: $SERIAL"
+  echo "| Android: $(adb shell getprop ro.build.version.release)"
+  echo "| Build: $(adb shell getprop ro.build.display.id)"
+  echo  "| Kernel: Linux $(adb shell uname -r)"
   echo "| Status: $STATUS"
   echo "| Location: $USBADB"
-  read -p "Press Enter to quit"
-  home
+  echo "|-----------------------------------------------|"
+  echo "| 1- Export as Text        2-Check if fake            |"
+  echo "|                                               |"
+  echo "| 0- Back                                       |"
+  echo "|-----------------------------------------------|"
+  read -p "? " CHOICE
+  if [ "$CHOICE" == 1 ]; then
+    exportinfo
+  elif [ "$CHOICE" == 2 ]; then
+    fakeif
+  elif [ "$CHOICE" == 0 ]; then
+    home
+  else
+    echo "Wrong input, retry!"
+    sleep 2
+    wipec
+  fi
 }
 
+exportinfo () {
+  touch deviceinfo.txt
+  echo -e 'Device: $DID' > deviceinfo.txt
+  echo -e 'OEM: $(adb shell getprop ro.product.brand)' >> deviceinfo.txt
+  echo -e 'Name: $(adb shell getprop ro.product.device)' >> deviceinfo.txt
+  echo -e 'SOC: $(adb shell getprop ro.board.platform)' >> deviceinfo.txt
+  echo -e 'Serial: $SERIAL' >> deviceinfo.txt
+  echo -e 'Android: $(adb shell getprop ro.build.version.release)' >> deviceinfo.txt
+  echo -e 'Build: $(adb shell getprop ro.build.display.id)' >> deviceinfo.txt
+  echo -e 'Kernel: Linux $(adb shell uname -r)' >> deviceinfo.txt
+  echo -e 'Status: $STATUS' >> deviceinfo.txt
+  echo -e 'Location: $USBADB' >> deviceinfo.txt
+  echo "Everything was exported to deviceinfo.txt"
+}
 
+#TODO: fakeif
+fakeif () {
+  headerprint
+  adb push res/fake/qcom.sh /tmp/qcom-fake.sh
+  adb shell bash /tmp/qcom-fake.sh
+  adb pull /tmp/fake res/fake/result
+  if [ "$(cat res/fake/result)" == 0 ]; then
+    echo "It's not a fake"
+  else
+    echo "It may be a fake.."
+  fi
+  read -p "Done! Press Enter to quit."
+  home
+}
 
 disclaimer () {
   clear
@@ -472,19 +537,56 @@ about () {
   echo " "
   echo "- License: Gpl V2"
   echo "- Developer: Joey Rizzoli"
-  echo "- Device Supported: Xiaomi Mi2(s), Mi3(w), Mi4(w) RedMi 1S"
+  echo "- Device Supported: Xiaomi Mi2(s), Mi2A, Mi3(w), Mi4(w) RedMi 1S"
   echo "- Disclaimer: this program may void your warranty. Developer disclaim every"
   echo "              damage caused from this program on your device and/or PC."
   echo ""
   echo "- Sources:  https://github.com/linuxxxxx/XiaomiTool"
   echo " "
   echo " "
-  read -p "Press enter to go back"
+  read -p "Done! Press Enter to quit."
   home
   }
 
-isavailable () {
-  adb wait-for-device
+wait_for_any_adb() {
+    echo "Waiting for device to be connected in normal or recovery mode"
+    ADB_STATE=$(adb devices | grep $DEVICE_ID |grep 'device\|recovery')
+    while [[ -z "$ADB_STATE" ]]
+    do
+        sleep 1
+        ADB_STATE=$(adb devices | grep $DEVICE_ID |grep 'device\|recovery')
+    done
+}
+
+wait_for_adb() {
+    MODE=$1
+    echo "Dev:$DEVICE_ID: Waiting for adb $MODE to be ready"
+    ADB_STATE=$(adb devices | grep $DEVICE_ID)
+    while ! [[ "$ADB_STATE" == *$MODE ]]
+    do
+        sleep 1
+        ADB_STATE=$(adb devices | grep $DEVICE_ID)
+    done
+}
+
+wait_for_adb_disconnect() {
+    echo "Dev:$DEVICE_ID: Waiting for device to be disconnected"
+    STATE=$(adb devices | grep $DEVICE_ID)
+    while [[ "$STATE" == *$DEVICE_ID* ]]
+    do
+        sleep 1
+        STATE=$(adb devices | grep $DEVICE_ID)
+    done
+}
+
+wait_for_fastboot() {
+    echo "Dev:$DEVICE_ID: Waiting for fastboot to be ready"
+    FASTBOOT_STATE=$(fastboot devices | grep $DEVICE_ID | awk '{ print $1}' )
+    while ! [[ "$FASTBOOT_STATE" == *$DEVICE_ID* ]]
+    do
+        sleep 1
+        FASTBOOT_STATE=$(fastboot devices | grep $DEVICE_ID | awk '{ print $1}' )
+    done
 }
 
 # <- Setup ->
@@ -494,7 +596,7 @@ detect_device() {
     adb start-server
     clear
     echo "Waiting for device ...."
-    isavailable
+    wait_for_any_adb
     DEVICE=$(adb shell getprop ro.product.device)
     DID=$(adb shell getprop ro.product.model)
     BUILD=$(adb shell getprop ro.build.version.release)
@@ -540,7 +642,7 @@ setup (){
   ROOTAOSP=$RES/root.zip
   ROOTMIUI=$RES/miui_root.zip
   DIR=/sdcard/tmp
-  BACKUPDIR=~/XiaomiTool/Backups
+  BACKFOLDER=~/XiaomiTool/Backups
   CAMDIR=/sdcard/DCIM/Camera
   ISCRAZY=0
   ACTION=$1
@@ -552,6 +654,7 @@ setup (){
   }
 
 android_api () {
+  wait_for_any_adb
   if [[ "$BUILD" == 4.4* ]]; then
       androidv=kk
   else
