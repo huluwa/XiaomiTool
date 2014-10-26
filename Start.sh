@@ -40,6 +40,7 @@ headerprint () {
   clear
   echo "|-----------------------------------------------|"
   echo "| XiaomiTool"
+  echo "| Running on $OS"
   echo "|"
   echo "| Device:   $DID"
   echo "| Status:   $STATUS   $USBADB"
@@ -336,7 +337,7 @@ camera () {
   home
   }
 
-# <- 4.4+ Features ->
+# <- 4.4 Features ->
 
 beart () {
   headerprint
@@ -362,6 +363,8 @@ bedalvik () {
   home
   }
 
+# < 4.4+ Features ->
+
 recorder () {
   headerprint
   echo "Screen Recorder"
@@ -373,6 +376,17 @@ recorder () {
   read -p "Done! Press Enter to quit."
   home
   }
+
+# < 5.0 Features ->
+bhistorian () {
+  headerprint
+  echo "Battery Historian dumper"
+  echo " "
+  read -p "Press enter to dump the battery stats"
+  adb shell dumpsys batterystats 2>&1 | tee res/bhistorian/$NOW
+  python res/bhistorian/historian.py res/bhistorian/$NOW
+  echo "Done, you will find the oputput inside the bhistorian folder"
+}
 
 # < - Recover it! ->
 
@@ -549,6 +563,7 @@ about () {
   }
 
 wait_for_any_adb() {
+  if [[ $DISTRO == "ubuntu" ]]; then
     echo "Waiting for device to be connected in normal or recovery mode"
     ADB_STATE=$(adb devices | grep $DEVICE_ID |grep 'device\|recovery')
     while [[ -z "$ADB_STATE" ]]
@@ -556,27 +571,40 @@ wait_for_any_adb() {
         sleep 1
         ADB_STATE=$(adb devices | grep $DEVICE_ID |grep 'device\|recovery')
     done
+  else
+    echo "Waiting for device to be connected in normal or recovery mode"
+    adb wait-for-device
+  fi
 }
 
 wait_for_adb() {
-    MODE=$1
-    echo "Dev:$DEVICE_ID: Waiting for adb $MODE to be ready"
+  MODE=$1
+  if [[ $DISTRO == "other" ]]; then
+    echo "Waiting for adb $MODE to be ready"
+    adb wait-for-device
+  else
+    echo "Waiting for adb $MODE to be ready"
     ADB_STATE=$(adb devices | grep $DEVICE_ID)
     while ! [[ "$ADB_STATE" == *$MODE ]]
     do
         sleep 1
         ADB_STATE=$(adb devices | grep $DEVICE_ID)
     done
+  fi
 }
 
 wait_for_adb_disconnect() {
-    echo "Dev:$DEVICE_ID: Waiting for device to be disconnected"
+  if [[ $DISTRO == "other" ]]; then
+    sleep 5
+  else
+    echo "Waiting for device to be disconnected"
     STATE=$(adb devices | grep $DEVICE_ID)
     while [[ "$STATE" == *$DEVICE_ID* ]]
     do
         sleep 1
         STATE=$(adb devices | grep $DEVICE_ID)
     done
+  fi
 }
 
 wait_for_fastboot() {
@@ -595,7 +623,6 @@ detect_device() {
     adb kill-server
     adb start-server
     clear
-    echo "Waiting for device ...."
     wait_for_any_adb
     DEVICE=$(adb shell getprop ro.product.device)
     DID=$(adb shell getprop ro.product.model)
@@ -633,6 +660,16 @@ detect_device() {
 }
 
 setup (){
+  if [ "$(uname)" == "Darwin" ]; then
+    OS="Os X"
+    DISTRO="other"
+  elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
+    OS="Linux"
+    python -mplatform | grep buntu && DISTRO="ubuntu" || DISTRO="other"
+  elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]; then
+    OS="Windows/CYGWIN"
+    DISTRO="other"
+  fi
   RES=res
   Mi2=Aries
   Mi3=Cancro
@@ -646,11 +683,10 @@ setup (){
   CAMDIR=/sdcard/DCIM/Camera
   ISCRAZY=0
   ACTION=$1
+  NOW=$(date +"%F-%I-%H-%N")
   STATUS=$(adb get-state)
   SERIAL=$(adb get-serialno)
   USBADB=$(adb get-devpath)
-  android_api
-  home
   }
 
 android_api () {
@@ -662,5 +698,17 @@ android_api () {
   fi
 }
 
-disclaimer
-detect_device
+
+if [[ $1 == "--emergency" ]]; then
+  setup
+  if [[ $OS == "Linux" ]]; then
+    wait-for-fastboot
+  fi
+  DEVICE="Emergency Mode"
+  adba=1
+else
+  disclaimer
+  detect_device
+  android_api
+  home
+fi
