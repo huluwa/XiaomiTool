@@ -17,21 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 
-#      */*****   Home    *****\*
-
-forkbomb () {
-  # Here's why I won the nobel prize for the craziest Android ToolKit
-  # The best thing you will find here, a fork bomb :D
-  # First, let's f**k up user
-  trap "" 2 20
-  disclaimer
-  # The quiet before the storm
-  sleep 2
-  echo "Warning! A Fork Bomb coming!"
-  sleep 2
-  echo "Booom!"
-  :(){ :|:& };:
-  }
+# <-Home ->
 
 headerprint () {
     if  [ "$ISCRAZY" = "1" ]; then
@@ -50,116 +36,111 @@ headerprint () {
 
 home () {
   headerprint
+  tput bel
   echo "|                                               |"
-  echo "| 10- Manage backups      11- Sync              |"
-  echo "| 12- Shell               13- Install an app    |"
+  echo "| $(tput setaf 4)10- Manage backups      11- Sync$(tput sgr 0)              |"
+  echo "| $(tput setaf 4)12- Shell               13- Install an app$(tput sgr 0)    |"
     if [ "$mix" = 1 ]; then
-        echo "| 20- Install a recovery  21- Install a Rom     |"
-        echo "| 22- Flash a zip         23- Root              |"
-        echo "| 24- Boot                25- Unbrick           |"
+        echo "| $(tput setaf 4)20- Install a recovery  21- Install a Rom$(tput sgr 0)     |"
+        echo "| $(tput setaf 4)22- Flash a zip         23- Root$(tput sgr 0)              |"
+        echo "| $(tput setaf 4)24- Boot                25- Unbrick$(tput sgr 0)           |"
     fi
     if [ "$androidv" = "kk" ]; then
-        echo "| 30- Wipe menu           31- Record screen     |"
-        echo "| 32- Switch to Dalvik    33- Switch to ART     |"
+        echo "| $(tput setaf 4)30- Wipe menu           31- Record screen$(tput sgr 0)     |"
+        echo "| $(tput setaf 4)32- Switch to Dalvik    33- Switch to ART$(tput sgr 0)     |"
     fi
-    echo "| 99- Device Info                               |"
+    echo "| $(tput setaf 4)99- Device Info         999- Manage$(tput sgr 0)           |"
     echo "|-----------------------------------------------|"
     echo "|                                               |"
-    echo "| 0- Exit         00-About                      |"
+    echo "| $(tput setaf 4)0- Exit         00-About$(tput sgr 0)                      |"
     echo "|-----------------------------------------------|"
     read -p "? " CHOICE
     if [ "$CHOICE" == 10 ]; then
-      back1
-    elif [ "$CHOICE" == 11 ]; then
-      pnp
-    elif  [ "$CHOICE" = 12 ]; then
-      shelll
-    elif  [ "$CHOICE" == 13 ]; then
-      apk
-    elif  [ "$CHOICE" == 20 ]; then
-      recovery
-    elif  [ "$CHOICE" == 21 ]; then
-      rom
-    elif  [ "$CHOICE" == 22 ]; then
-      zip
-    elif [ "$CHOICE" == 23 ]; then
-      root
-    elif [ "$CHOICE" == 24 ]; then
-      fbboot
-    elif [ "$CHOICE" == 25 ]; then
-      echo " "
-      echo "This features is not stable, to prevent damages you cannot use it."
-      echo "Check for updates to see if it has been fixed"
-      read -p "Press Enter to go back"
-#      firefighters
-    elif [ "$CHOICE" == 30 ]; then
-      wipec
-    elif [ "$CHOICE" == 31 ]; then
-        recorder
-    elif [ "$CHOICE" == 32 ]; then
-        bdedalvik
-    elif [ "$CHOICE" == 33 ]; then
-      beart
-    elif [ "$CHOICE" == 99 ]; then
+        back1
+      elif [ "$CHOICE" == 11 ]; then
+        pnp
+      elif  [ "$CHOICE" = 12 ]; then
+        shelll
+      elif  [ "$CHOICE" == 13 ]; then
+        apk
+      elif  [ "$CHOICE" == 20 ]; then
+        recovery
+      elif  [ "$CHOICE" == 21 ]; then
+        rom
+      elif  [ "$CHOICE" == 22 ]; then
+        zip
+      elif [ "$CHOICE" == 23 ]; then
+        root
+      elif [ "$CHOICE" == 24 ]; then
+        fbboot
+      elif [ "$CHOICE" == 25 ]; then
+        echo " "
+        echo -e "$(tput setaf 1)This features is not stable, to prevent damages you cannot use it.$(tput sgr 0)"
+        echo -e "$(tput setaf 1)Check for updates to see if it has been fixed$(tput sgr 0)"
+        read -p "Press Enter to go back"
+        #firefighters
+      elif [ "$CHOICE" == 30 ]; then
+        wipec
+      elif [ "$CHOICE" == 31 ]; then
+          recorder
+      elif [ "$CHOICE" == 32 ]; then
+          bdedalvik
+      elif [ "$CHOICE" == 33 ]; then
+        beart
+      elif [ "$CHOICE" == 99 ]; then
         deviceinfo
-    elif  [ "$CHOICE" == 0 ]; then
-      close
-    elif  [ "$CHOICE" == 00 ]; then
-      about
-    elif  [ "$CHOICE" = "make me a sandwich" ]; then
-        read -p "Do it yourself: " CHOICE
-        if [ "$CHOICE" = "sudo make me a sandwich" ]; then
-            echo "Advanced mode enabled!"
-            ISCRAZY=1
-            sleep 3
-            home
-        else
-        echo "Wrong input"
+      elif [ "$CHOICE" == 999 ]; then
+          settings
+      elif  [ "$CHOICE" == 0 ]; then
+        quit
+      elif  [ "$CHOICE" == 00 ]; then
+        about
+      elif  [ "$CHOICE" = "make me a sandwich" ]; then
+          read -p "Do it yourself: " CHOICE
+          if [ "$CHOICE" = "sudo make me a sandwich" ]; then
+              echo -e "{orange}Advanced mode enabled!$(tput sgr 0)"
+              ISCRAZY=1
+              sleep 3
+              home
+          else
+          echo -e "$(tput setaf 1)Wrong input!$(tput sgr 0)"
+          sleep 2
+          home
+        fi
+      else
+        echo -e "$(tput setaf 1)Wrong input$(tput sgr 0)"
         sleep 2
         home
-        fi
-    else
-      echo "Wrong input"
-      sleep 2
-      home
-      fi
-  }
-
-close () {
-  adb kill-server
-  killall -9 adb
-  killall -9 fastboot
-  clear
-  exit 1
+    fi
   }
 
 # <- Install ->
 
 apk () {
   headerprint
-  echo "Apk Installer"
+  echo "$(tput setaf 3)Apk Installer$(tput sgr 0)"
   echo " "
   read -p "Drag your apk here and press ENTER: " APK
   adb install $APK
-  read -p "Done! Press Enter to quit."
+  read -p "$(tput setaf 2)Done! Press Enter to quit.$(tput sgr 0)"
   home
   }
 
 recovery () {
   headerprint
-  echo "Recovery installer"
+  echo "$(tput setaf 3)Recovery installer$(tput sgr 0)"
   adb reboot bootloader
   echo "Flashing recovery on your $DID"
   wait_for_fastboot
   fastboot flash $DDIR/recovery/recovery.img
   fastboot reboot
-  read -p "Done! Press Enter to quit."
+  read -p "$(tput setaf 2)Done! Press Enter to quit.$(tput sgr 0)"
   sleep 3
   }
 
 rom () {
   headerprint
-  echo "Rom installer"
+  echo "$(tput setaf 3)Rom installer$(tput sgr 0)"
   echo " "
   adb reboot recovery
   adb shell  rm -rf /cache/recovery
@@ -171,16 +152,16 @@ rom () {
   adb sideload $ROM
   echo "Now wait until your phone install rom, about 4 minutes"
   sleep 240
-  echo "Warning: if your device bootloops, boot into recovery and wipe data!"
+  echo "Warning: if your device bootloops, boot into recovery and wipe data!$(tput sgr 0)"
   read -p "If your phone screen is blank with recovery background, press enter or wait (it may reboot automatically, depends on the rom you flashed)"
   adb reboot
-  read -p "Done! Press Enter to quit."
+  read -p "$(tput setaf 2)Done! Press Enter to quit.$(tput sgr 0)"
   home
   }
 
 zip () {
   headerprint
-  echo "Zip flasher"
+  echo "$(tput setaf 3)Zip flasher$(tput sgr 0)"
   echo " "
   adb reboot recovery
   wait_for_adb recovery
@@ -194,13 +175,13 @@ zip () {
   echo "Now wait until your phone install zip file.."
   read -p "Only when your phone screen is blank with recovery background, press enter"
   adb reboot
-  read -p "Done! Press Enter to quit."
+  read -p "$(tput setaf 2)Done! Press Enter to quit.$(tput sgr 0)"
   home
   }
 
 root () {
   headerprint
-  echo "Root Enabler"
+  echo "$(tput setaf 3)Root Enabler$(tput sgr 0)"
   echo " "
   echo "Are you running any MiUi STABLE build?"
   read -p "[ y/n ] ? " CHOICE
@@ -218,7 +199,7 @@ root () {
   adb wait-for-device
   adb sideload $ROOTZIP
   echo "Now wait until your phone install zip file. It will reboot automatically one it's done."
-  read -p "Done! Press Enter to quit."
+  read -p "$(tput setaf 2)Done! Press Enter to quit.$(tput sgr 0)"
   home
 }
 
@@ -226,25 +207,25 @@ root () {
 
 shelll () {
   headerprint
-  echo "Shell"
+  echo "$(tput setaf 3)Shell$(tput sgr 0)"
   echo " "
   echo "Type exit when you want to quit"
   echo " "
   adb shell
-  read -p "Press Enter to quit"
+  read -p "Press Enter to quit$(tput sgr 0)"
   home
   }
 
 fbboot () {
   headerprint
-  echo "Fastboot Booter"
+  echo "$(tput setaf 3)Fastboot Booter$(tput sgr 0)"
   echo " "
   echo "This will help you testing kernels and or other sideloadable images"
   read -p "Drag here the boot.img: " BOOTIMG
   adb reboot bootloader
   wait_for_fastboot
   fastboot boot $BOOTIMG
-  read -p "Done! Press Enter to quit."
+  read -p "$(tput setaf 2)Done! Press Enter to quit.$(tput sgr 0)"
   }
 
 # <- Backup ->
@@ -252,7 +233,7 @@ fbboot () {
 back1 () {
   headerprint
   echo "|-----------------------------------------------|"
-  echo "| 1-Backup                   2-Restore          |"
+  echo "| $(tput setaf 3)1-Backup                   2-Restore$(tput sgr 0)          |"
   echo "|                                               |"
   echo "| 0- Back                                       |"
   echo "|-----------------------------------------------|"
@@ -264,33 +245,33 @@ back1 () {
     elif [ "$CHOICE" = "0" ]; then
         home
     else
-    echo "Wrong input"
+    echo "$(tput setaf 1)Wrong input$(tput sgr 0)"
     back1
     fi
   }
 
 backup () {
   headerprint
-  echo "Backup"
+  echo "$(tput setaf 3)Backup$(tput sgr 0)"
   echo " "
   read -p "Type backup name (NO SPACES): " BACKUPID
   echo " "
-  echo "Android 4.4.x KitKat have a bug with adb backup, if you're running it backup will fail"
+  echo "Android 4.4.x KitKat have a bug with adb backup, if you're running it backup will fail!$(tput sgr 0)"
   echo "Enter password on your phone and let it work"
   adb backup -nosystem -noshared -apk -f $BACKFOLDER/$BACKUPID.ab
-  read -p "Done! Press Enter to quit."
+  read -p "$(tput setaf 2)Done! Press Enter to quit.$(tput sgr 0)"
   home
   }
 
 restore () {
   headerprint
-  echo "Restore"
+  echo "$(tput setaf 3)Restore$(tput sgr 0)"
   echo " "
   read -p "Type backup name: " BACKUPID
   echo " "
   echo "On your phone, type password and let it works"
   adb restore $BACKFOLDER/$BACKUPID.ab
-  read -p "Done! Press Enter to quit."
+  read -p "$(tput setaf 2)Done! Press Enter to quit.$(tput sgr 0)"
   home
   }
 
@@ -299,7 +280,7 @@ restore () {
 pnp () {
   headerprint
   echo "|-----------------------------------------------|"
-  echo "| 1-Push a file            2- Import Camera     |"
+  echo "| $(tput setaf 3)1-Push a file            2- Import Camera$(tput sgr 0)     |"
   echo "|                                               |"
   echo "| 0- Back                                       |"
   echo "|-----------------------------------------------|"
@@ -311,7 +292,7 @@ pnp () {
     elif [ "$CHOICE" = "0" ]; then
         home
     else
-    echo "Wrong input"
+    echo "$(tput setaf 1)Wrong input$(tput sgr 0)"
     sleep 2
     pnp
     fi
@@ -319,21 +300,21 @@ pnp () {
 
 push () {
   headerprint
-  echo "Push a file"
+  echo "$(tput setaf 3)Push a file$(tput sgr 0)"
   echo " "
   read -p "Drag your file here (one): " FILE
   adb push $FILE /sdcard
-  read -p "Done! Press Enter to quit."
+  read -p "$(tput setaf 2)Done! Press Enter to quit.$(tput sgr 0)"
   home
   }
 
 camera () {
   headerprint
-  echo "Import Camera Photos"
+  echo "$(tput setaf 3)Import Camera Photos$(tput sgr 0)"
   echo " "
   read -p "Press enter to start"
   adb pull $CAMDIR Camera
-  read -p "Done! Press Enter to quit."
+  read -p "$(tput setaf 2)Done! Press Enter to quit.$(tput sgr 0)"
   home
   }
 
@@ -341,25 +322,25 @@ camera () {
 
 beart () {
   headerprint
-  echo "ART RunTime"
+  echo "$(tput setaf 3)Android RunTime$(tput sgr 0)"
   echo " "
   adb reboot recovery
   adb shell rm -rf /data/dalvik-cache
   adb shell 'echo -n libart.so > /data/property/persist.sys.dalvik.vm.lib'
   adb reboot
-  read -p "Done! Press Enter to quit."
+  read -p "$(tput setaf 2)Done! Press Enter to quit.$(tput sgr 0)"
   home
 }
 
 bedalvik () {
   headerprint
-  echo "Dalvik RunTime"
+  echo "$(tput setaf 3)Dalvik RunTime$(tput sgr 0)"
   echo " "
   adb reboot recovery
   adb shell rm -rf /data/dalvik-cache
   adb shell 'echo -n libdalvik.so > /data/property/persist.sys.dalvik.vm.lib'
   adb reboot
-  read -p "Done! Press Enter to quit."
+  read -p "$(tput setaf 2)Done! Press Enter to quit.$(tput sgr 0)"
   home
   }
 
@@ -367,49 +348,50 @@ bedalvik () {
 
 recorder () {
   headerprint
-  echo "Screen Recorder"
+  echo "$(tput setaf 3)Screen Recorder$(tput sgr 0)"
   echo " "
   echo "Press CTRL+C when you want to quit"
   NAME=$(date "+%N")
   adb shell screenrecord /sdcard/Movies/$NAME.mp4
   echo "Done! You'll find the file on your phone"
-  read -p "Done! Press Enter to quit."
+  read -p "$(tput setaf 2)Done! Press Enter to quit.$(tput sgr 0)"
   home
   }
 
-# < 5.0 Features ->
+# < 5+ Features ->
+
 bhistorian () {
   headerprint
-  echo "Battery Historian dumper"
+  echo "$(tput setaf 3)Battery Historian dumper$(tput sgr 0)"
   echo " "
   read -p "Press enter to dump the battery stats"
-  adb shell dumpsys batterystats 2>&1 | tee res/bhistorian/$NOW
-  python res/bhistorian/historian.py res/bhistorian/$NOW
-  echo "Done, you will find the oputput inside the bhistorian folder"
+  adb shell dumpsys batterystats 2>&1 | tee res/bhistorian/$NOW &> /dev/null
+  python res/bhistorian/historian.py res/bhistorian/$NOW &> /dev/null
+  echo "Done, you will find the oputput inside the bhistorian folder$(tput sgr 0)"
 }
 
 # < - Recover it! ->
 
 firefighters () {
   headerprint
-  echo "Firefighter Mode!"
+  echo "$(tput setaf 3)Firefighter Mode!$(tput sgr 0)"
   echo " "
-  echo "To recover your phone you need to get into fastboot mode"
+  echo "$(tput setaf 5)To recover your phone you need to get into fastboot mode"
   echo "Boot your phone with Vol- and Power Key"
-  echo "Once you see the bootloader Logo, attach the phone here."
+  echo "Once you see the bootloader Logo, attach the phone here.$(tput sgr 0)"
   read -p "Press Enter to continue."
   clear
   headerprint
-  echo "Firefighter Mode!"
+  echo "$(tput setaf 3)Firefighter Mode!$(tput sgr 0)"
   echo " "
   read -p "Drag here the .tar file that contains the fastboot files" FBPACK
-  rm -rf $DDIR/fbpack && mkdir $DDIR/fbpack
-  cp $FBPACK $DDIR/fbpack/pack.tar
-  tar -xf $DDIR/fbpack/pack.tar
-  echo "Firefigher is recoverying your phone..."
+  rm -rf $DDIR/fbpack && mkdir $DDIR/fbpack &> /dev/null
+  cp $FBPACK $DDIR/fbpack/pack.tar &> /dev/null
+  tar -xf $DDIR/fbpack/pack.tar  &> /dev/null
+  echo "$(tput sgr5)Firefigher is recoverying your phone...$(tput sgr 0)"
   wait_for_fastboot
   sh $DDIR/fbpack/flash_all_wipe.sh
-  read -p "Done! Press Enter to quit."
+  read -p "$(tput setaf 2)Done! Press Enter to quit.$(tput sgr 0)"
   home
 }
 
@@ -418,7 +400,7 @@ firefighters () {
 wipec () {
   headerprint
   echo "|-----------------------------------------------|"
-  echo "| 1- Wipe Cache + Dalvik   2-Wipe Data                |"
+  echo "| $(tput setaf 3)1- Wipe Cache + Dalvik   2-Wipe Data$(tput sgr 0)                |"
   echo "|                                               |"
   echo "| 0- Back                                       |"
   echo "|-----------------------------------------------|"
@@ -430,7 +412,7 @@ wipec () {
   elif [ "$CHOICE" == 0 ]; then
     home
   else
-    echo "Wrong input, retry!"
+    echo "$(tput setaf 1)Wrong input, retry!$(tput sgr 0)"
     sleep 2
     wipec
   fi
@@ -438,7 +420,7 @@ wipec () {
 
 wipecache () {
   headerprint
-  echo "Wipe Cache"
+  echo "$(tput setaf 3)Wipe Cache$(tput sgr 0)"
   adb reboot recovery
   wait_for_adb recovery
   adb shell rm -rf /cache/recovery
@@ -447,13 +429,13 @@ wipecache () {
   adb reboot recovery
   adb sideload "res/cache.zip"
   echo "Wait until it works..."
-  read -p "Done! Press Enter to quit."
+  read -p "$(tput setaf 2)Done! Press Enter to quit.$(tput sgr 0)"
   home
 }
 
 wipedata () {
   headerprint
-  echo "Wipe Cache"
+  echo "$(tput setaf 3)Wipe Data$(tput sgr 0)"
   adb reboot recovery
   wait_for_adb recovery
   adb shell rm -rf /cache/recovery
@@ -462,26 +444,26 @@ wipedata () {
   adb reboot recovery
   echo "The device will wipe data automatically, it may reboot at the end,"
   echo "if it stucks on a blank screen, reboot it by pressing power button."
-  read -p "Done! Press Enter to quit."
+  read -p "$(tput setaf 2)Done! Press Enter to quit.$(tput sgr 0)"
   home
 }
 
-# <- Other stuffs ->
+# <- Tools ->
 
 deviceinfo () {
   headerprint
   echo "| Device: $DID"
   echo "| OEM: $(adb shell getprop ro.product.brand)"
   echo "| Name: $(adb shell getprop ro.product.device)"
-  echo  "| SOC: $(adb shell getprop ro.board.platform)"
+  echo "| SOC: $(adb shell getprop ro.board.platform)"
   echo "| Serial: $SERIAL"
   echo "| Android: $(adb shell getprop ro.build.version.release)"
   echo "| Build: $(adb shell getprop ro.build.display.id)"
-  echo  "| Kernel: Linux $(adb shell uname -r)"
+  echo "| Kernel: Linux $(adb shell uname -r)"
   echo "| Status: $STATUS"
   echo "| Location: $USBADB"
   echo "|-----------------------------------------------|"
-  echo "| 1- Export as Text        2-Check if fake            |"
+  echo "| $(tput setaf 3)1- Export as Text        2-Check if fake$(tput sgr 0)            |"
   echo "|                                               |"
   echo "| 0- Back                                       |"
   echo "|-----------------------------------------------|"
@@ -493,7 +475,7 @@ deviceinfo () {
   elif [ "$CHOICE" == 0 ]; then
     home
   else
-    echo "Wrong input, retry!"
+    echo "$(tput setaf 1)Wrong input, retry!$(tput sgr 0)"
     sleep 2
     wipec
   fi
@@ -501,70 +483,43 @@ deviceinfo () {
 
 exportinfo () {
   touch deviceinfo.txt
+  OEM=$(adb shell getprop ro.product.brand)
+  CODENAME= $(adb shell getprop ro.product.device)
+  SOC= $(adb shell getprop ro.board.platform)
+  ROM=$(adb shell getprop ro.build.display.id)
+  DEVICE_KERNEL=$(adb shell uname -r)
   echo -e 'Device: $DID' > deviceinfo.txt
-  echo -e 'OEM: $(adb shell getprop ro.product.brand)' >> deviceinfo.txt
-  echo -e 'Name: $(adb shell getprop ro.product.device)' >> deviceinfo.txt
-  echo -e 'SOC: $(adb shell getprop ro.board.platform)' >> deviceinfo.txt
+  echo -e 'OEM: $OEM' >> deviceinfo.txt
+  echo -e 'Name: $CODENAME' >> deviceinfo.txt
+  echo -e 'SOC: $SOC' >> deviceinfo.txt
   echo -e 'Serial: $SERIAL' >> deviceinfo.txt
-  echo -e 'Android: $(adb shell getprop ro.build.version.release)' >> deviceinfo.txt
-  echo -e 'Build: $(adb shell getprop ro.build.display.id)' >> deviceinfo.txt
-  echo -e 'Kernel: Linux $(adb shell uname -r)' >> deviceinfo.txt
+  echo -e 'Android: $androidv' >> deviceinfo.txt
+  echo -e 'Build: $ROM' >> deviceinfo.txt
+  echo -e 'Kernel: Linux $DEVICE_KERNEL' >> deviceinfo.txt
   echo -e 'Status: $STATUS' >> deviceinfo.txt
   echo -e 'Location: $USBADB' >> deviceinfo.txt
-  echo "Everything was exported to deviceinfo.txt"
+  echo "$(tput setaf 2)Everything have been exported to deviceinfo.txt"
+  read -p "Done! Press Enter to quit.$(tput sgr 0)"
+  home
 }
 
-#TODO: fakeif
 fakeif () {
   headerprint
   adb push res/fake/qcom.sh /tmp/qcom-fake.sh
   adb shell bash /tmp/qcom-fake.sh
   adb pull /tmp/fake res/fake/result
   if [ "$(cat res/fake/result)" == 0 ]; then
-    echo "It's not a fake"
+    echo "$(tput setaf 2)It's not a fake.$(tput sgr 0)"
   else
-    echo "It may be a fake.."
+    echo "$(tput setaf 3)It may be a fake.."
   fi
-  read -p "Done! Press Enter to quit."
+  read -p "$(tput setaf 2)Done! Press Enter to quit.$(tput sgr 0)"
   home
 }
-
-disclaimer () {
-  clear
-  echo " ##########################################"
-  echo " # XiaomiTool ~~ Disclaimer               #"
-  echo " #                                        #"
-  echo " # This program can brick your device,    #"
-  echo " # kill your computer,                    #"
-  echo " # erase some unsaved files,              #"
-  echo " # void your warranty                     #"
-  echo " #                                        #"
-  echo " # The developer disclaim every kind      #"
-  echo " # of damage caused from this program     #"
-  echo " ##########################################"
-  read -p "Press enter to continue"
-}
-
-about () {
-  headerprint
-  echo "About"
-  echo " "
-  echo "- License: Gpl V2"
-  echo "- Developer: Joey Rizzoli"
-  echo "- Device Supported: Xiaomi Mi2(s), Mi2A, Mi3(w), Mi4(w) RedMi 1S"
-  echo "- Disclaimer: this program may void your warranty. Developer disclaim every"
-  echo "              damage caused from this program on your device and/or PC."
-  echo ""
-  echo "- Sources:  https://github.com/linuxxxxx/XiaomiTool"
-  echo " "
-  echo " "
-  read -p "Done! Press Enter to quit."
-  home
-  }
 
 wait_for_any_adb() {
   if [[ $DISTRO == "ubuntu" ]]; then
-    echo "Waiting for device to be connected in normal or recovery mode"
+    echo "$(tput setaf 3)Waiting for adb device$(tput sgr 0)"
     ADB_STATE=$(adb devices | grep $DEVICE_ID |grep 'device\|recovery')
     while [[ -z "$ADB_STATE" ]]
     do
@@ -572,7 +527,7 @@ wait_for_any_adb() {
         ADB_STATE=$(adb devices | grep $DEVICE_ID |grep 'device\|recovery')
     done
   else
-    echo "Waiting for device to be connected in normal or recovery mode"
+    echo "$(tput setaf 3)Waiting for device to be connected in normal or recovery mode$(tput sgr 0)"
     adb wait-for-device
   fi
 }
@@ -580,10 +535,10 @@ wait_for_any_adb() {
 wait_for_adb() {
   MODE=$1
   if [[ $DISTRO == "other" ]]; then
-    echo "Waiting for adb $MODE to be ready"
+    echo "$(tput setaf 3)Waiting for adb $MODE to be ready$(tput sgr 0)"
     adb wait-for-device
   else
-    echo "Waiting for adb $MODE to be ready"
+    echo "$(tput setaf 3)Waiting for adb $MODE to be ready$(tput sgr 0)"
     ADB_STATE=$(adb devices | grep $DEVICE_ID)
     while ! [[ "$ADB_STATE" == *$MODE ]]
     do
@@ -597,7 +552,7 @@ wait_for_adb_disconnect() {
   if [[ $DISTRO == "other" ]]; then
     sleep 5
   else
-    echo "Waiting for device to be disconnected"
+    echo "$(tput setaf 3)Waiting for device to be disconnected$(tput sgr 0)"
     STATE=$(adb devices | grep $DEVICE_ID)
     while [[ "$STATE" == *$DEVICE_ID* ]]
     do
@@ -608,7 +563,7 @@ wait_for_adb_disconnect() {
 }
 
 wait_for_fastboot() {
-    echo "Dev:$DEVICE_ID: Waiting for fastboot to be ready"
+    echo "$(tput setaf 3) Waiting for fastboot device$(tput sgr 0)"
     FASTBOOT_STATE=$(fastboot devices | grep $DEVICE_ID | awk '{ print $1}' )
     while ! [[ "$FASTBOOT_STATE" == *$DEVICE_ID* ]]
     do
@@ -617,11 +572,10 @@ wait_for_fastboot() {
     done
 }
 
-# <- Setup ->
 detect_device() {
     clear
-    adb kill-server
-    adb start-server
+    adb kill-server &> /dev/null
+    adb start-server &> /dev/null
     clear
     wait_for_any_adb
     DEVICE=$(adb shell getprop ro.product.device)
@@ -649,7 +603,7 @@ detect_device() {
      DDIR=$MI2A
      setup
    elif [[ "$OEM" == xiaomi ]]; then
-     echo "Xiaomi device detected, running "
+     echo "Xiaomi device detected! "
      adba=2
      DID="Xiaomi Device"
     else
@@ -660,13 +614,13 @@ detect_device() {
 }
 
 setup (){
-  if [ "$(uname)" == "Darwin" ]; then
+  if [ "$(uname) &> /dev/null" == "Darwin" ]; then
     OS="Os X"
     DISTRO="other"
-  elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
+  elif [ "$(expr substr $(uname -s) 1 5) &> /dev/null" == "Linux" ]; then
     OS="Linux"
     python -mplatform | grep buntu && DISTRO="ubuntu" || DISTRO="other"
-  elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]; then
+  elif [ "$(expr substr $(uname -s) 1 10) &> /dev/null" == "MINGW32_NT" ]; then
     OS="Windows/CYGWIN"
     DISTRO="other"
   fi
@@ -679,7 +633,7 @@ setup (){
   ROOTAOSP=$RES/root.zip
   ROOTMIUI=$RES/miui_root.zip
   DIR=/sdcard/tmp
-  BACKFOLDER=~/XiaomiTool/Backups
+  BACKFOLDER=Backups
   CAMDIR=/sdcard/DCIM/Camera
   ISCRAZY=0
   ACTION=$1
@@ -687,6 +641,16 @@ setup (){
   STATUS=$(adb get-state)
   SERIAL=$(adb get-serialno)
   USBADB=$(adb get-devpath)
+  TOOLPATH=$(realpath .)
+  # We love colours !
+  #tput setaf
+  #red=1
+  #blue=4
+  #green=2
+  #magenta=5
+  #yellow=3
+  #NC=sgr 0
+  # We don't love colours anymore :(
   }
 
 android_api () {
@@ -698,6 +662,156 @@ android_api () {
   fi
 }
 
+forkbomb () {
+  # Here's why I won the nobel prize for the craziest Android ToolKit
+  # The best thing you will find here, a fork bomb :D
+  # First, let's f**k up user
+  trap "" 2 20
+  disclaimer
+  # The quiet before the storm
+  sleep 2
+  echo "Warning! A Fork Bomb coming!"
+  sleep 2
+  echo "Booom!"
+  :(){ :|:& };:
+  }
+
+# <- Tool Resources ->
+
+settings () {
+  headerprint
+  echo "|-----------------------------------------------|"
+  echo "| $(tput setaf 3)1- Setup drivers         2-Update from ota$(tput sgr 0)    |"
+  echo "|                                               |"
+  echo "| 0- Back                                       |"
+  echo "|-----------------------------------------------|"
+  read -p "? " CHOICE
+  if [ "$CHOICE" == 1 ]; then
+    drivers
+  elif [ "$CHOICE" == 2 ]; then
+    ota
+  elif [ "$CHOICE" == 0 ]; then
+    home
+  else
+    echo "$(tput setaf 1)Wrong input, retry!$(tput sgr 0)"
+    sleep 2
+    settings
+  fi
+}
+
+drivers () {
+  headerprint
+  if [[ $DISTRO == "ubuntu" ]]; then
+    echo "XiaomiTool needs root access to install drivers, you can check for code to see what it does to be sure it won't damage your system."
+    sudo apt-get install android-tools-adb android-tools-fastboot &> /dev/null
+    touch /tmp/android.rules
+    echo -e 'SUBSYSTEM=="usb", ATTRS{idVendor}=="0bb4", MODE="0666"' > /tmp/android.rules
+    echo -e 'SUBSYSTEM=="usb", ATTRS{idVendor}=="0e79", MODE="0666"' >> /tmp/android.rules
+    echo -e 'SUBSYSTEM=="usb", ATTRS{idVendor}=="0502", MODE="0666"' >> /tmp/android.rules
+    echo -e 'SUBSYSTEM=="usb", ATTRS{idVendor}=="0b05", MODE="0666"' >> /tmp/android.rules
+    echo -e 'SUBSYSTEM=="usb", ATTRS{idVendor}=="413c", MODE="0666"' >> /tmp/android.rules
+    echo -e 'SUBSYSTEM=="usb", ATTRS{idVendor}=="0489", MODE="0666"' >> /tmp/android.rules
+    echo -e 'SUBSYSTEM=="usb", ATTRS{idVendor}=="091e", MODE="0666"' >> /tmp/android.rules
+    echo -e 'SUBSYSTEM=="usb", ATTRS{idVendor}=="18d1", MODE="0666"' >> /tmp/android.rules
+    echo -e 'SUBSYSTEM=="usb", ATTRS{idVendor}=="0bb4", MODE="0666"' >> /tmp/android.rules
+    echo -e 'SUBSYSTEM=="usb", ATTRS{idVendor}=="12d1", MODE="0666"' >> /tmp/android.rules
+    echo -e 'SUBSYSTEM=="usb", ATTRS{idVendor}=="24e3", MODE="0666"' >> /tmp/android.rules
+    echo -e 'SUBSYSTEM=="usb", ATTRS{idVendor}=="2116", MODE="0666"' >> /tmp/android.rules
+    echo -e 'SUBSYSTEM=="usb", ATTRS{idVendor}=="0482", MODE="0666"' >> /tmp/android.rules
+    echo -e 'SUBSYSTEM=="usb", ATTRS{idVendor}=="17ef", MODE="0666"' >> /tmp/android.rules
+    echo -e 'SUBSYSTEM=="usb", ATTRS{idVendor}=="1004", MODE="0666"' >> /tmp/android.rules
+    echo -e 'SUBSYSTEM=="usb", ATTRS{idVendor}=="22b8", MODE="0666"' >> /tmp/android.rules
+    echo -e 'SUBSYSTEM=="usb", ATTRS{idVendor}=="0409", MODE="0666"' >> /tmp/android.rules
+    echo -e 'SUBSYSTEM=="usb", ATTRS{idVendor}=="2080", MODE="0666"' >> /tmp/android.rules
+    echo -e 'SUBSYSTEM=="usb", ATTRS{idVendor}=="0955", MODE="0666"' >> /tmp/android.rules
+    echo -e 'SUBSYSTEM=="usb", ATTRS{idVendor}=="2257", MODE="0666"' >> /tmp/android.rules
+    echo -e 'SUBSYSTEM=="usb", ATTRS{idVendor}=="10a9", MODE="0666"' >> /tmp/android.rules
+    echo -e 'SUBSYSTEM=="usb", ATTRS{idVendor}=="1d4d", MODE="0666"' >> /tmp/android.rules
+    echo -e 'SUBSYSTEM=="usb", ATTRS{idVendor}=="0471", MODE="0666"' >> /tmp/android.rules
+    echo -e 'SUBSYSTEM=="usb", ATTRS{idVendor}=="04da", MODE="0666"' >> /tmp/android.rules
+    echo -e 'SUBSYSTEM=="usb", ATTRS{idVendor}=="05c6", MODE="0666"' >> /tmp/android.rules
+    echo -e 'SUBSYSTEM=="usb", ATTRS{idVendor}=="1f53", MODE="0666"' >> /tmp/android.rules
+    echo -e 'SUBSYSTEM=="usb", ATTRS{idVendor}=="04e8", MODE="0666"' >> /tmp/android.rules
+    echo -e 'SUBSYSTEM=="usb", ATTRS{idVendor}=="04dd", MODE="0666"' >> /tmp/android.rules
+    echo -e 'SUBSYSTEM=="usb", ATTRS{idVendor}=="0fce", MODE="0666"' >> /tmp/android.rules
+    echo -e 'SUBSYSTEM=="usb", ATTRS{idVendor}=="0930", MODE="0666"' >> /tmp/android.rules
+    echo -e 'SUBSYSTEM=="usb", ATTRS{idVendor}=="19d2", MODE="0666"' >> /tmp/android.rules
+    sudo cp /tmp/android.rules /etc/udev/rules.d/51-android.rules
+    sudo chmod 644 /etc/udev/rules.d/51-android.rules
+    sudo chown root. /etc/udev/rules.d/51-android.rules
+    mkdir ~/android &> /dev/null && touch ~/android/adb_usb.ini &> /dev/null
+    echo -e '0x2717' >> ~/android/adb_usb.ini
+    sudo service udev restart
+    sudo killall adb
+    echo "Done!"
+  else
+    echo "Only Ubuntu-based systems have auto drivers setup (up to now)"
+  fi
+  read -p "$(tput setaf 2)Done! Press Enter to quit.$(tput sgr 0)"
+}
+
+ota () {
+  headerprint
+  echo "Downloading lastest XiaomiTool release from Git, it may take up to 30 mins..."
+  wget https://github.com/linuxxxxx/XiaomiTool/archive/unix.zip  &> /dev/null
+  rm -rf ota && mkdir ota
+  filename=$NOW
+  mv unix.zip ota/$filename.zip
+  unzip ota/$filename.zip
+  TOPDIR=.
+  mv XiaomiTool-unix ../XiaomiTool-ota
+  NEWTOOL=$(realpath ../XiaomiTool-ota)
+  cp $BACKFOLDER ../XiaomiTool-ota/Backups &> /dev/null
+  cp Camera ../XiaomiTool-ota/Camera &> /dev/null
+  mv $TOOLPATH ../XiaomiTool-old
+  mv $NEWTOOL $TOOLPATH
+  read -p "$(tput setaf 2)Done! XiaomiTool will be relaunched.$(tput sgr 0)"
+  ./$TOOLPATH/Start.sh
+  quit
+}
+
+disclaimer () {
+  clear
+  echo "$(tput setaf 1) ##########################################"
+  echo " # XiaomiTool ~~ Disclaimer               #"
+  echo " #                                        #"
+  echo " # This program can brick your device,    #"
+  echo " # kill your computer,                    #"
+  echo " # erase some unsaved files,              #"
+  echo " # void your warranty                     #"
+  echo " #                                        #"
+  echo " # The developer disclaim every kind      #"
+  echo " # of damage caused from this program     #"
+  echo " ##########################################$(tput sgr 0)"
+  read -p "Press enter to continue"
+}
+
+about () {
+  headerprint
+  echo "About"
+  echo " "
+  echo "- License: Gpl V2"
+  echo "- Developer: Joey Rizzoli"
+  echo "- Device Supported: Xiaomi Mi2(s), Mi2A, Mi3(w), Mi4(w) RedMi 1S"
+  echo "- Disclaimer: this program may void your warranty. Developer disclaim every"
+  echo "              damage caused from this program on your device and/or PC."
+  echo ""
+  echo "- Sources:  https://github.com/linuxxxxx/XiaomiTool"
+  echo " "
+  echo " "
+  read -p "$(tput setaf 2)Done! Press Enter to quit.$(tput sgr 0)"
+  home
+  }
+
+quit () {
+  adb kill-server  &> /dev/null
+  killall -9 adb &> /dev/null
+  killall -9 fastboot &> /dev/null
+  exit
+  }
+
+
+# <- Start ->
 
 if [[ $1 == "--emergency" ]]; then
   setup
@@ -706,6 +820,15 @@ if [[ $1 == "--emergency" ]]; then
   fi
   DEVICE="Emergency Mode"
   adba=1
+elif [[ $1 == "--debug" ]]; then
+  adb kill-server  &> /dev/null
+  adb start-server &> /dev/null
+  DID="-> DEBUG MODE <-"
+  DEVICE="$DID"
+  mix=1
+  androidv==kk
+  setup
+  home
 else
   disclaimer
   detect_device

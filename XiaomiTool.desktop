@@ -11,4 +11,3 @@ Categories=Utility;
 Icon=/usr/share/icons/Humanity/apps/32/bash.svg
 Terminal=true
 Exec=sh -c "ZcScr='./Start.sh'; $(dirname '%k')/$ZcScr -I || '%k'/$ZcScr -I"
-
