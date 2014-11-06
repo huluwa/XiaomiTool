@@ -15,77 +15,78 @@ XiaomiTool::~XiaomiTool()
 
 void XiaomiTool::on_RestoreB_clicked()
 {
-    system ("gnome-terminal -e './run.sh --backup'");
+    system ("./run.sh --backup");
 }
 
 
 void XiaomiTool::on_BackupB_clicked()
 {
-    system ("gnome-terminal -e './run.sh --restore'");
+    system ("./run.sh --restore");
 }
 
 
 void XiaomiTool::on_PushB_clicked()
 {
-    system ("gnome-terminal -e './run.sh --push'");
+    system ("./run.sh --push");
 }
 
 void XiaomiTool::on_CameraB_clicked()
 {
-    system ("gnome-terminal -e './run.sh --camera'");
+    system ("./run.sh --camera");
 }
 
 void XiaomiTool::on_APKB_clicked()
 {
-    system ("gnome-terminal -e './run.sh --apk'");
+    system ("./run.sh --apk");
 }
 
 void XiaomiTool::on_ShellB_clicked()
 {
-    system ("gnome-terminal -e './run.sh --shell'");
+    system ("./run.sh --shell");
 }
 
 void XiaomiTool::on_SRecB_clicked()
 {
-    system ("gnome-terminal -e './run.sh --srec'");
+    system ("./run.sh --srec");
 }
 
 void XiaomiTool::on_RunTB_clicked()
 {
-    system ("gnome-terminal -e './run.sh '--runtime'");
+    system ("./run.sh --runtime");
 }
 
 void XiaomiTool::on_RecoveryB_clicked()
 {
-    system ("gnome-terminal -e './run.sh --recovery'");
+    system ("./run.sh --recovery");
 }
 
 void XiaomiTool::on_ZipB_clicked()
 {
-    system ("gnome-terminal -e './run.sh --flash'");
+    system ("./run.sh --flash");
 }
 
 void XiaomiTool::on_RootB_clicked()
 {
-    system ("gnome-terminal -e './run.sh --root'");
+    system ("./run.sh --root");
 }
 
 void XiaomiTool::on_FastBootB_clicked()
 {
-    system ("gnome-terminal -e './run.sh --fastboot'");
+    system ("./run.sh --fastboot");
 }
 
 void XiaomiTool::on_WDataB_clicked()
 {
-    system ("gnome-terminal -e './run.sh --wipe'");
+    system ("./run.sh --wipe");
 }
 
 void XiaomiTool::on_DeviceB_clicked()
 {
-    system ("gnome-terminal -e './run.sh --device'");
+    system ("./run.sh --device");
 }
 
 void XiaomiTool::on_ToolB_clicked()
 {
-    system ("gnome-terminal -e './run.sh --about'");
+    system ("./run.sh --about");
 }
+
