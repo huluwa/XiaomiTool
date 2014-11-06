@@ -458,7 +458,7 @@ echo Sources: https://github.com/linuxxxxx/XiaomiTool
 echo
 echo XiaomiTool is an OpenSource
 echo project that has the goal to create a safe,
-echo fast and noob-friendly interface to manage your Xiaomi Device.
+echo fast and user-friendly interface to manage your Xiaomi Device.
 echo
 pause
 goto :home
@@ -477,6 +477,19 @@ echo * of damage caused from this program     *
 echo ******************************************
 pause
 goto :setup
+
+:wait-for-adb
+del tmp\status.txt
+adb devices | findstr -i  device recovery > tmp\status.txt
+set /p ADB_STATE=<tmp/status.txt
+if [%ADB_STATE%] EQU [] goto :wait-for-adb
+
+:wait-for-fastboot
+del tmp\fb-status.txt
+adb devices | findstr -i  device recovery > tmp\fb-status.txt
+set /p ADB_STATE=<tmp/status.txt
+if [%ADB_STATE%] EQU [] goto :wait-for-fastboot
+
 
 :boom
 :: Here is why I won the nobel prize for the craziest Android ToolKit
