@@ -1,38 +1,39 @@
-*Xiaomi Tool*
+#** Xiaomi Tool**
 
-XiaomiTool is an OpenSource multi-platform project that has the goal to create a safe, fast and noob-friendly interface to manage your Xiaomi Device.
+## *XiaomiTool is an OpenSource multi-platform project that has the goal to create a safe, fast and noob-friendly interface to manage your Xiaomi Device.*
 
-Features
+### **Features**
 
-[]Backup and Restore
+- [ ] Backup and Restore
 
-[]Push files
+- [ ] Push files
 
-[]Import photos from camera
+- [ ] Import photos from camera
 
-[]Install apks
+- [ ] Install apks
 
-[]Shell from pc
+- [ ] Shell from pc
 
-[]Screen Recorder
+- [ ] Screen Recorder
 
-[]Manage runtime (on 4.4)
+- [ ] Manage runtime (on 4.4)
 
-[]Install Drivers
+- [ ] Install Drivers
 
-[]Flash a recovery
+-  [ ] Flash a recovery
 
-[]Flash zip files
+- [ ] Flash zip files
 
-[]Root
+- [ ] Root
 
-[]Boot images
+- [ ] Boot images
 
-[]Wipe data
+- [ ] Wipe data
+
 
 | Platform  | Build no  | Sources |
 | :------------ |:---------------:| -----:|
-| Windows | 0.01 - Unstable  | https://github.com/linuxxxxx/XiaomiTool/tree/windows |
+| Windows | 0.1 - Beta  | https://github.com/linuxxxxx/XiaomiTool/tree/windows |
 | Linux | 0.1 - Beta | https://github.com/linuxxxxx/XiaomiTool/tree/linux |
 | Unix | 0.1 - Beta |  https://github.com/linuxxxxx/XiaomiTool/tree/unix |
 
