@@ -1,0 +1,9 @@
+@echo off
+echo Fastboot Booter
+echo.
+SET /P file= Drag your file here, then press Enter:
+echo Booting..
+@adb reboot bootloader
+fastboot boot %file%
+echo Done!
+pause
