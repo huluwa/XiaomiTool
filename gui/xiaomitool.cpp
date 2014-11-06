@@ -89,4 +89,3 @@ void XiaomiTool::on_ToolB_clicked()
 {
     system ("./run.sh --about");
 }
-

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>571</width>
-    <height>393</height>
+    <width>632</width>
+    <height>307</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,7 +22,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>60</y>
+      <y>10</y>
       <width>131</width>
       <height>101</height>
      </rect>
@@ -80,7 +80,7 @@
     <property name="geometry">
      <rect>
       <x>150</x>
-      <y>60</y>
+      <y>10</y>
       <width>131</width>
       <height>101</height>
      </rect>
@@ -135,9 +135,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>170</y>
+      <y>120</y>
       <width>181</width>
-      <height>191</height>
+      <height>181</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -229,9 +229,9 @@
     <property name="geometry">
      <rect>
       <x>200</x>
-      <y>170</y>
+      <y>120</y>
       <width>141</width>
-      <height>191</height>
+      <height>181</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -256,7 +256,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>30</y>
+        <y>20</y>
         <width>81</width>
         <height>27</height>
        </rect>
@@ -269,7 +269,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>60</y>
+        <y>50</y>
         <width>81</width>
         <height>27</height>
        </rect>
@@ -282,7 +282,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>90</y>
+        <y>80</y>
         <width>81</width>
         <height>27</height>
        </rect>
@@ -295,7 +295,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>120</y>
+        <y>110</y>
         <width>81</width>
         <height>27</height>
        </rect>
@@ -308,7 +308,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>150</y>
+        <y>140</y>
         <width>99</width>
         <height>27</height>
        </rect>
@@ -322,9 +322,9 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>10</y>
-      <width>251</width>
+      <x>290</x>
+      <y>40</y>
+      <width>191</width>
       <height>41</height>
      </rect>
     </property>
@@ -332,26 +332,13 @@
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:28pt;&quot;&gt;XiaomiTool&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_2">
-    <property name="geometry">
-     <rect>
-      <x>420</x>
-      <y>20</y>
-      <width>151</width>
-      <height>291</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/new/prefix1/res/droid.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-    </property>
-   </widget>
    <widget class="QFrame" name="frame_5">
     <property name="geometry">
      <rect>
-      <x>290</x>
-      <y>60</y>
+      <x>350</x>
+      <y>120</y>
       <width>121</width>
-      <height>101</height>
+      <height>71</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -366,30 +353,17 @@
        <x>10</x>
        <y>0</y>
        <width>101</width>
-       <height>91</height>
+       <height>61</height>
       </rect>
      </property>
      <property name="title">
       <string>Settings</string>
      </property>
-     <widget class="QPushButton" name="Drivers">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>30</y>
-        <width>99</width>
-        <height>27</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Drivers</string>
-      </property>
-     </widget>
      <widget class="QPushButton" name="UpdateB">
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>60</y>
+        <y>30</y>
         <width>99</width>
         <height>27</height>
        </rect>
@@ -404,9 +378,9 @@
     <property name="geometry">
      <rect>
       <x>350</x>
-      <y>280</y>
+      <y>199</y>
       <width>120</width>
-      <height>80</height>
+      <height>101</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -420,8 +394,8 @@
       <rect>
        <x>10</x>
        <y>0</y>
-       <width>120</width>
-       <height>80</height>
+       <width>111</width>
+       <height>101</height>
       </rect>
      </property>
      <property name="title">
@@ -431,7 +405,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>20</y>
+        <y>30</y>
         <width>99</width>
         <height>27</height>
        </rect>
@@ -444,7 +418,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>50</y>
+        <y>60</y>
         <width>99</width>
         <height>27</height>
        </rect>
@@ -455,42 +429,19 @@
      </widget>
     </widget>
    </widget>
-   <widget class="QLabel" name="label_3">
+   <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>370</y>
-      <width>411</width>
-      <height>17</height>
+      <x>480</x>
+      <y>80</y>
+      <width>171</width>
+      <height>231</height>
      </rect>
     </property>
     <property name="text">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/new/prefix1/res/decorations.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/new/prefix1/res/device.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_4">
-    <property name="geometry">
-     <rect>
-      <x>410</x>
-      <y>370</y>
-      <width>161</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/new/prefix1/res/decorations.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-    </property>
-   </widget>
-   <zorder>label_3</zorder>
-   <zorder>label_4</zorder>
-   <zorder>frame</zorder>
-   <zorder>frame_2</zorder>
-   <zorder>frame_3</zorder>
-   <zorder>frame_4</zorder>
-   <zorder>label</zorder>
-   <zorder>label_2</zorder>
-   <zorder>frame_5</zorder>
-   <zorder>frame_6</zorder>
   </widget>
   <action name="actionAbout">
    <property name="text">
