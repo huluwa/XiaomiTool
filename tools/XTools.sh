@@ -180,7 +180,7 @@ deviceinfo () {
   echo "| Status: $STATUS"
   echo "| Location: $USBADB"
   echo "|-----------------------------------------------|"
-  echo "| $(tput setaf 3)1- Export as Text        2-Check if fake$(tput sgr 0)            |"
+  echo "| $(tput setaf 3)1- Export as Text      2-Check if fake$(tput sgr 0)            |"
   echo "|                                               |"
   echo "| 0- Back                                       |"
   echo "|-----------------------------------------------|"
@@ -235,6 +235,7 @@ drivers () {
     echo -e 'SUBSYSTEM=="usb", ATTRS{idVendor}=="0fce", MODE="0666"' >> /tmp/android.rules
     echo -e 'SUBSYSTEM=="usb", ATTRS{idVendor}=="0930", MODE="0666"' >> /tmp/android.rules
     echo -e 'SUBSYSTEM=="usb", ATTRS{idVendor}=="19d2", MODE="0666"' >> /tmp/android.rules
+    echo -e 'SUBSYSTEM=="usb", ATTRS{idVendor}=="2717", MODE="0666"' >> /tmp/android.rules
     sudo cp /tmp/android.rules /etc/udev/rules.d/51-android.rules
     sudo chmod 644 /etc/udev/rules.d/51-android.rules
     sudo chown root. /etc/udev/rules.d/51-android.rules
@@ -242,6 +243,7 @@ drivers () {
     echo -e '0x2717' >> ~/android/adb_usb.ini
     sudo service udev restart
     sudo killall adb
+    adb start-server &>/dev/null
     echo "Done!"
   else
     echo "Only Ubuntu-based systems have auto drivers setup (up to now)"
@@ -361,17 +363,19 @@ init () {
 ota () {
   headerprint
   echo "Downloading lastest XiaomiTool release from Git, it may take up to 30 mins..."
-  wget https://github.com/linuxxxxx/XiaomiTool/archive/unix.zip  &> /dev/null
-  rm -rf ota && mkdir ota
+  wget https://github.com/linuxxxxx/XiaomiTool/$(releaseurl)  &> /dev/null
+  mkdir ota
   filename=$NOW
   mv unix.zip ota/$filename.zip
   unzip ota/$filename.zip
-  mv XiaomiTool-unix ../XiaomiTool-ota
-  NEWTOOL=$(realpath ../XiaomiTool-ota)
-  cp $BACKFOLDER ../XiaomiTool-ota/Backups &> /dev/null
-  cp Camera ../XiaomiTool-ota/Camera &> /dev/null
+  mv XiaomiTool- $OTAP
+  NEWTOOL=$(realpath $OTAP)
+  chmod +x $NEWTOOL/tools/XTools.sh & chmod +x $NEWTOOL/tools/run.sh & chmod +x $NEWTOOL/tools/runat
+  cp $BACKFOLDER $NEWTOOL/Backups &> /dev/null
+  cp Camera $NEWTOOL/Camera &> /dev/null
   mv $TOOLPATH ../XiaomiTool-old
   mv $NEWTOOL $TOOLPATH
+  rm -rf ota
   read -p "$(tput setaf 2)Done! Press enter to quit XiaomiTool.$(tput sgr 0)"
   quit
 }
@@ -501,6 +505,7 @@ setup (){
   SERIAL=$(adb get-serialno)
   USBADB=$(adb get-devpath)
   TOOLPATH=$(realpath .)
+  OTAP=$OTAP
   # We love colours !
   #tput setaf
   #red=1
@@ -642,6 +647,7 @@ elif [[ $1 == "--about" ]]; then
 elif [[ $1 == "--debug" ]]; then
   adb kill-server  &> /dev/null
   adb start-server &> /dev/null
+
   DID="-> DEBUG MODE <-"
   DEVICE="$DID"
   mix=1
