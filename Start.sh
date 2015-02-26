@@ -26,7 +26,7 @@ headerprint () {
   clear
   echo "|-----------------------------------------------|"
   echo "| XiaomiTool"
-  echo "| Running on $OS"
+  echo "| Running on unix"
   echo "|"
   echo "| Device:   $DID"
   echo "| Status:   $STATUS   $USBADB"
@@ -758,15 +758,13 @@ ota () {
   filename=$NOW
   mv unix.zip ota/$filename.zip
   unzip ota/$filename.zip
-  TOPDIR=.
   mv XiaomiTool-unix ../XiaomiTool-ota
   NEWTOOL=$(realpath ../XiaomiTool-ota)
   cp $BACKFOLDER ../XiaomiTool-ota/Backups &> /dev/null
   cp Camera ../XiaomiTool-ota/Camera &> /dev/null
   mv $TOOLPATH ../XiaomiTool-old
   mv $NEWTOOL $TOOLPATH
-  read -p "$(tput setaf 2)Done! XiaomiTool will be relaunched.$(tput sgr 0)"
-  ./$TOOLPATH/Start.sh
+  read -p "$(tput setaf 2)Done! Press enter to quit XiaomiTool.$(tput sgr 0)"
   quit
 }
 
@@ -788,7 +786,7 @@ disclaimer () {
 
 about () {
   headerprint
-  echo "About"
+  echo "Xiaomi Tool for unix"
   echo " "
   echo "- License: Gpl V2"
   echo "- Developer: Joey Rizzoli"
